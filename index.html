@@ -1,0 +1,208 @@
+<!-- File: test.html - NARRATIVE noroff school project -->
+<!-- Author: itsOiK -->
+<!-- Date: 21/01-23 -->
+
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>TwineClone™️</title>
+    </head>
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden
+        }
+
+        html {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            background-color: grey;
+            color: white;
+            font-size: 3em;
+        }
+
+        body {
+            box-shadow: rgb(0 0 0) 0px 0px 20px 2px inset;
+            width: 100%;
+        }
+
+        *,
+        *:before,
+        *:after {
+            -webkit-box-sizing: inherit;
+            -moz-box-sizing: inherit;
+            box-sizing: inherit;
+        }
+
+        #container {
+            display: flex;
+            justify-content: space-between;
+            height: 100%;
+            flex-direction: column;
+
+        }
+
+        #text-container {
+            height: 65%;
+            padding: 25px;
+        }
+
+        .itemPickup {
+            margin-left: unset;
+        }
+
+        .passageLink {
+            /* # */
+        }
+
+        #navigation {
+            border: aliceblue 5px;
+            border-style: outset;
+            background-color: #a6a6a6;
+            height: 30%;
+            border-radius: 15px;
+            box-shadow: 4px 4px 6px 2px black;
+            border-color: #eeeeee 9a9a9a 9a9a9a #eeeeee;
+            overflow: auto;
+            box-shadow: rgb(0 0 0) 0px 0px 20px 2px inset;
+
+        }
+
+        #navigation>div {
+            margin-left: 15px;
+            margin-top: 10px;
+        }
+
+        hr {
+            margin: 10px 0 10px 0;
+        }
+
+        #back {
+            font-size: 2em;
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            background-color: white;
+            border-radius: 55%;
+            width: 120px;
+            height: 120px;
+            box-shadow: 0 0 11px 4px white;
+        }
+
+        #back:hover {
+            background-color: black;
+            box-shadow: 0 0 11px 4px black;
+        }
+
+        #back>a:hover {
+            color: white;
+            text-shadow: 0 0 20px white;
+        }
+
+        a {
+            text-decoration: none;
+
+        }
+
+        a:visited {
+            color: black;
+        }
+
+        a:hover {
+            text-shadow: 0 0 20px black;
+
+        }
+
+        #back>a {
+            color: black;
+            border-radius: 55%;
+            transform: translate3d(5px, -8px, 0px);
+            position: absolute;
+            text-shadow: 0 0 20px black;
+        }
+
+        #item-container {
+            height: 5%;
+        }
+
+        #items {
+            display: flex;
+            justify-content: flex-start;
+            height: 100%;
+        }
+
+        button {
+            font-size: 0.5em;
+            width: 250px;
+            border-radius: 15px;
+            border-style: outset;
+            background: #a6a6a6;
+            box-shadow: 4px 4px 6px 2px black;
+            border-width: 2px;
+            border-color: #eeeeee 9a9a9a 9a9a9a #eeeeee;
+            box-shadow: rgb(0 0 0) 0px 0px 20px 2px inset;
+
+        }
+
+        button:hover {
+            text-shadow: 0 0 3px black;
+            box-shadow: rgb(250, 250, 250) 0px 0px 20px 2px inset;
+
+        }
+
+        #item-response>button {
+            margin-top: 20px;
+            align-self: center;
+        }
+
+        #item-response {
+            position: fixed;
+            text-align: center;
+            max-width: 80%;
+            transform: translateX(-50%);
+            top: 10%;
+            left: 50%;
+            background-color: #1f1f1f;
+            border-radius: 15px;
+            padding: 20px;
+            border: 4px;
+            border-style: outset;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 4px 6px 2px black;
+            border-color: #eeeeee 9a9a9a 9a9a9a #eeeeee;
+        }
+
+        .item-response-hidden {
+            display: none !important;
+
+        }
+    </style>
+
+    <body>
+
+        <div id="inventory"></div>
+        <div id="container">
+
+            <div id="text-container">
+                <p>
+                    Welcome, click <a href="#" onclick="main.goToPassage(passages[1])">HERE</a> to start
+                </p>
+
+            </div>
+            <div id="item-container">
+                <div id="item-response" class="item-response-hidden"></div>
+                <div id="items"></div>
+            </div>
+            <div id="navigation">Navigation</div>
+        </div>
+        <script src="js\script.js"></script>
+    </body>
+
+</html>
