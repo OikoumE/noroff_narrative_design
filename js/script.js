@@ -559,10 +559,8 @@ const passages = {
     },
     floor_04_2: {
         text: `Suddenly the air becomes thick and viscous, almost glue like. The lights gets dimmer and dimmer until you are surrounded by nothing but darkness.<br>
-        You hear a gentle, firm and familiar voice: "Are you ready?"<br>
-        <i>"I.. I'm afraid.. What is happening?"</i><br>
-        "Stop fooling around, come on let us go!" The voice responds sligthly irritated<br>
-        <i>"Wh.. Who are you? W.. What.. is this?"</i> you utter with a shivering voice<br>
+        You hear a gentle, firm and familiar voice: "Are you ready?" <i>"I.. I'm afraid.. What is happening?"</i><br>
+        "Stop fooling around, come on let us go!" The voice responds sligthly irritated. <i>"Wh.. Who are you? W.. What.. is this?"</i> you utter with a shivering voice<br>
         The lights are getting brighter and brigther again. You realize you are not in your apartment building anymore and cry out: <i>"Where am I!?"</i><br>
         The visous air looses its grip on you and you can feel you are standing on solid ground and the light is bright enough that you can see where you are now.<br>
         You see the shape of a person, crouched on the floor over a toolbox, <i>"DAD!? IS THAT YOU!?"</i> You shout from the top of your lungs!<br>
