@@ -616,7 +616,7 @@ const passages = {
         <i><"I cant move, I cant speak."></i> You struggle to remain conscious trying to let out another cry: <i>"Don't leave me here!"</i> but with no effect<br>
         `,
         links: [
-            passageLink("xxx", '<i>"Wha.. Who is this?"</i>'),
+            passageLink("floor_04_6", '<i>"Wha.. Who is this?"</i>'),
         ],
         items: {
             extinguisher: { use: false, pickup: false, },
