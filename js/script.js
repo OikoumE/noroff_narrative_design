@@ -36,7 +36,9 @@ class Item {
         itemResponse.classList.remove("item-response-hidden");
         var passage = this.inventory.main.currPassage;
         var buttonText = "Close";
-        if ("canUseFlashlight" in passage && passage.canUseFlashlight || "canUseExtinguisher" in passage && passage.canUseExtinguisher) {
+
+        const { extinguisher, flashlight } = passage.items;
+        if (extinguisher.use || flashlight.use) {
             itemResponse.innerHTML = this.text;
             buttonText = "Continue";
             while (navigation.children.length > 1) {
@@ -140,29 +142,22 @@ class Main {
         if (this.currPassage && !goToPrev) this.passageHistory.push(this.currPassage);
         this.currPassage = passage;
         this.clearContainer();
-        var modifiedText = this.addItemTextToPassage(passage.items);
+        var modifiedText = this.addItemTextToPassage(passage);
         this.populateContainer(modifiedText);
         this.updateItems();
         this.updateNavigation(passage);
     }
 
-    addItemTextToPassage({ extinguisher, flashlight }) {
-
-
-
-
+    addItemTextToPassage(passage) {
         var mod = "";
-        switch (true) {
-            case passage.canUseExtinguisher:
-                if (main.hasExtinguisher == true)
-                    mod = items.extinguisher.can;
-                else mod += items.extinguisher.cant;
-                break;
-            case passage.canUseFlashlight:
-                if (main.hasFlashlight == true)
-                    mod = items.flashlight.can;
-                else mod = items.flashlight.cant;
-                break;
+        const { extinguisher, flashlight } = passage.items;
+        console.log('[script:151]: this.inventory.length', this.inventory.currentInventory.length);
+        if (this.inventory.currentInventory.length > 0) {
+            if (extinguisher.use) mod = items.extinguisher.can;
+            if (flashlight.use) mod = items.flashlight.can;
+        } else {
+            if (extinguisher.use) mod = items.extinguisher.cant;
+            if (flashlight.use) mod = items.flashlight.cant;
         }
         return `${passage.text}<br><i>${mod}</i>`;
     }
