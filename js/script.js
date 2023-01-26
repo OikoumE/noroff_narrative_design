@@ -151,7 +151,6 @@ class Main {
     addItemTextToPassage(passage) {
         var mod = "";
         const { extinguisher, flashlight } = passage.items;
-        console.log('[script:151]: this.inventory.length', this.inventory.currentInventory.length);
         if (this.inventory.currentInventory.length > 0) {
             if (extinguisher.use) mod = items.extinguisher.can;
             if (flashlight.use) mod = items.flashlight.can;
@@ -534,7 +533,7 @@ const passages = {
 
         `,
         links: [
-            passageLink("floor_select", "Go back to staircase"),
+            passageLink("floor_08_1", "Investigate Further"),
         ],
         items: {
             extinguisher: { use: false, pickup: false, },
@@ -542,6 +541,73 @@ const passages = {
         },
         next: null,
     },
+    floor_08_1: {
+        text: `As you walk around the hallways your are taken away by thoughts about the past<br>
+        <i>"I know I've been here, I live here! Why does it feel like ive never been here before"</i><br>
+        You keep walking down the hall but it seems you are gaining no progress.<br>
+        After walking for a little bit there is a faint rythmic sound coming from behind. <i>Clang.... Clang... Clang.. </i><br>
+        The clanging sound intensifies in both volume and speed. <br>
+        <i>"This sound, it is familiar, ive heard this before somewhere before."</i><br>
+        `,
+        links: [
+            passageLink("floor_08_2", "Remember"),
+        ],
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
+        next: null,
+    },
+    floor_08_2: {
+        text: `Suddenly the air becomes thick and viscous, almost oil like. The lights gets dimmer and dimmer until you are surrounded by nothing but darkness.<br>
+        You hear a gentle, firm and familiar voice: "Are you ready?"<br>
+        <i>"I.. I'm afraid.. What is happening?"</i><br>
+        "Stop fooling around, come on let us go!" The voice responds sligthly irritated<br>
+        <i>"Wh.. Who are you? W.. What.. is this?"</i> you utter with a shivering voice<br>
+        The lights are getting brighter and brigther again. You realize you are not in your apartment building anymore and cry out: <i>"Where am I!?"</i><br>
+        The visous air looses its grip on you and you can feel you are standing on solid ground and the light is bright enough that you can see where you are now.<br>
+        You see the shape of a person, crouched on the floor over a toolbox, <i>"DAD!? IS THAT YOU!?"</i> You shout from the top of your lungs!<br>
+        You start to recognize where you are.
+        `,
+        links: [
+            passageLink("floor_08_3", '<i>"This place.. it is my dad`s garage"</i>'),
+        ],
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
+        next: null,
+    },
+    floor_08_3: {
+        text: `The figure crouched on the floor is impatiently banging a wrench on the toolbox. That rythm.. You have known this rythm your whole life, 
+        you hum it in the shower, when driving, all of the time you hum this rythm.<br>
+        You feel warm and at ease by this rythm and let out another cry: <i>"DAD! It's me! You'r son!"</i>..<br>
+        He cannot hear you, he does'nt respond.. <i>"DAAAD!!"</i>.. <br>
+        He looks up from his toolbox and stops the rythming banging of the wrench. "Ahh there you are, ready to go now?".<br>
+        You hear footsteps approaching from behind 
+        `,
+        links: [
+            passageLink("floor_08_4", '<i>"Wha.. Who`s there?"</i>'),
+        ],
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
+        next: null,
+    },
+    floor_08_4: {
+        text: ` 
+        `,
+        links: [
+            passageLink("xxx", '<i>"Wha.. Who is this?"</i>'),
+        ],
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
+        next: null,
+    },
+
     janitors_door: {
         text: `You knock on the janitor's door and get no answer, you start pounding it, 
         when you realize that his office hours are listed on the door and he is currently not here.<br>
