@@ -94,14 +94,8 @@ class Main {
     }
     updateNavigation(passage) {
         navigation.innerHTML = "";
-        passage.links.forEach(linkElement => {
-            // check if inventory has this item already
-            if (!this.inventory.currentInventory.map(invItem => invItem.name).includes(linkElement.firstChild.name)) {
-                // if we dont have item, add link
-                navigation.appendChild(linkElement);
-                appendHr(navigation);
-            }
-        });
+        this.passageLinks(passage); // add passage link
+        this.pickupItemLink(passage.items); // add item picku link
         // add "#back" button
         navigation.innerHTML += `<div id="back"><a href="#"  onclick="main.goToPrevPassage()">🢀</a></div>`;
         if (this.passageHistory.length == 0) {
@@ -109,6 +103,24 @@ class Main {
             getElId("back").remove();
         }
     }
+    passageLinks({ links }) {
+        links.forEach(linkElement => {
+            if (!this.inventory.currentInventory.map(invItem => invItem.name).includes(linkElement.firstChild.name)) {
+                navigation.appendChild(linkElement);
+                appendHr(navigation);
+            }
+        });
+    }
+    pickupItemLink({ extinguisher, flashlight }) {
+        var notInInv = (itemName) => !this.inventory.currentInventory.map(invItem => invItem.name).includes(itemName);
+        var add = (item) => {
+            navigation.appendChild(itemPickup(item));
+            appendHr(navigation);
+        };
+        if (notInInv("Extinguisher") && extinguisher.pickup) add(items.extinguisher);
+        if (notInInv("Flashlight") && flashlight.pickup) add(items.flashlight);
+    }
+
     updateItems() {
         itemsContainer.innerHTML = "";
         if (this.inventory.currentInventory.length > 0) {
@@ -122,19 +134,23 @@ class Main {
         textContainer.innerHTML = innerHTML;
     }
     goToPassage(passage, goToPrev = false) {
-        updatePassageIndicator(passage);
+        updatePassageIndicator(passage); //!DEV
         itemResponse.classList.add("item-response-hidden");
         itemResponse.innerHTML = "";
         if (this.currPassage && !goToPrev) this.passageHistory.push(this.currPassage);
         this.currPassage = passage;
         this.clearContainer();
-        var modifiedText = this.addItemTextToPassage(passage);
+        var modifiedText = this.addItemTextToPassage(passage.items);
         this.populateContainer(modifiedText);
         this.updateItems();
         this.updateNavigation(passage);
     }
 
-    addItemTextToPassage(passage) {
+    addItemTextToPassage({ extinguisher, flashlight }) {
+
+
+
+
         var mod = "";
         switch (true) {
             case passage.canUseExtinguisher:
@@ -187,34 +203,59 @@ const items = {
     }
 };
 
+
+var easter = {
+    text: `test`,
+    links: [
+        passageLink("egg", "Chicken?"),
+        passageLink(null, "or"),
+        passageLink("egg", "Egg?"),
+    ],
+    items: {
+        extinguisher: { use: false, pickup: false, },
+        flashlight: { use: false, pickup: false }
+    },
+    next: null,
+};
+
 const passages = {
     easter: {
-        text: `What came first?`,
+        text: `... <i>"What came first?"</i>`,
         links: [
-            passageLink("'egg'", "Chicken?"),
+            passageLink("egg", "Chicken?"),
             passageLink(null, "or"),
-            passageLink("'egg'", "Egg?"),
+            passageLink("egg", "Egg?"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     egg: {
-        text: `What came first?`,
+        text: `<i>"It's a difficult question; What did come first?"</i>`,
         links: [
-            passageLink("'joke'", "🥚?"),
+            passageLink("joke", "🥚?"),
             passageLink(null, "or"),
-            passageLink("'joke'", "🐔?"),
+            passageLink("joke", "🐔?"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     joke: {
-        text: `Congratulations, you reached a dead end :D`,
-        links: [],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        text: `<i>"I dont have time for this! There might be a fire raging and I'm standing here thinking about chickens?"</i><br>
+        You can not believe you have just stood there for 5 minutes thinking about chickens, and it was not the good deep fried kind either.<br>
+        You get your act together after that moment of weakness and blame it on the stress of dealing with a fire!`,
+        links: [
+            passageLink("foyer_3", "Leave office"),
+        ],
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     intro: {
@@ -229,8 +270,10 @@ const passages = {
         links: [
             passageLink("apartment", `Leave apartment`),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     apartment: {
@@ -244,10 +287,12 @@ const passages = {
         links: [
             passageLink("elevator", "Take the elevator"),
             passageLink("foyer_1", "Take the stairs"),
-            itemPickup(items.extinguisher.name, items.extinguisher.text),
+            // itemPickup(items.extinguisher),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: true, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     elevator: {
@@ -257,18 +302,22 @@ const passages = {
         links: [
             passageLink("foyer_1", "Take the stairs instead"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     extinguisher_reminder: {
         text: `There's a pungent smell of smoke, are you sure you don't want to pick up the extinguisher?`,
         links: [
-            itemPickup(items.extinguisher.name, items.extinguisher.text),
+            // itemPickup(items.extinguisher),
             passageLink("foyer_1", "Take the stairs"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: true, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     foyer_1: {
@@ -278,8 +327,10 @@ const passages = {
         links: [
             passageLink("outside_building_1", "Go outside."),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     foyer_2: {
@@ -291,18 +342,22 @@ const passages = {
         links: [
             passageLink("janitors_door", `Knock on the janitors door`),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     foyer_3: {
         text: `You are in the foyer`,
         links: [
             passageLink("staircase", `Go to staircase`),
-            itemPickup(items.extinguisher.name, items.extinguisher.text),
+            // itemPickup(items.extinguisher),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: true, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     outside_building_1: {
@@ -312,8 +367,10 @@ const passages = {
             passageLink("outside_leave", "Leave into the darkness"),
             passageLink("enter_building", "Go back inside"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     outside_building_2: {
@@ -322,8 +379,10 @@ const passages = {
         links: [
             passageLink("enter_building", "Go back inside"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     outside_building_3: {
@@ -332,8 +391,10 @@ const passages = {
             passageLink("outside_leave", "Leave"),
             passageLink("foyer_3", "Go back inside"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     outside_leave: {
@@ -343,8 +404,10 @@ const passages = {
         links: [
             passageLink("outside_building_2", "Turn Back"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     enter_building: {
@@ -354,8 +417,10 @@ const passages = {
             passageLink("dialogue_1", `"Yeah, i'm OK thanks! fire!? smell!? what are you talking about?"`),
             passageLink("dialogue_2", `"NO! I woke up smelling smoke and I rushed out, I have no idea what's going on"`),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     dialogue_1: {
@@ -364,8 +429,10 @@ const passages = {
             passageLink("foyer_2", `"i dont have time for this, im late for work!"`),
             passageLink("foyer_2", `"i dont know, i recently moved here, maybe ask the janitor?"`),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     dialogue_2: {
@@ -374,19 +441,22 @@ const passages = {
             passageLink("foyer_2", `"i dont have time for this, im late for work!"`),
             passageLink("foyer_2", `"i dont know, i recently moved here, maybe ask the janitor?"`),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
-
     staircase: {
         text: `You are in the staircase`,
         links: [
             passageLink("foyer_3", `Go back to hallway`),
             passageLink("floor_select", `Go to specific floor`),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     floor_select: {
@@ -402,8 +472,10 @@ const passages = {
             passageLink("other_floors", `Floor 07`),
             passageLink("floor_08", `Floor 08`),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     other_floors: {
@@ -411,8 +483,10 @@ const passages = {
         links: [
             passageLink("floor_select", `Back to staircase`),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     basement_1: {
@@ -423,8 +497,10 @@ const passages = {
         links: [
             passageLink("floor_select", `Back to staircase`),
         ],
-        canUseFlashlight: true,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: true, pickup: false }
+        },
         next: "basement_2",
     },
     basement_2: {
@@ -436,8 +512,10 @@ const passages = {
         links: [
             passageLink("basement_3", "Open the door"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     basement_3: {
@@ -448,8 +526,10 @@ const passages = {
         links: [
             passageLink("intro", "'The end?'"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     floor_08: {
@@ -461,8 +541,10 @@ const passages = {
         links: [
             passageLink("floor_select", "Go back to staircase"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     janitors_door: {
@@ -476,8 +558,10 @@ const passages = {
         links: [
             passageLink("janitors_office_1", `Enter janitors office`),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     janitors_office_1: {
@@ -490,19 +574,37 @@ const passages = {
         links: [
             passageLink("janitors_office_2", "Pick up the note"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     janitors_office_2: {
         text: `On the note there are some squigglies that are not legible. You notice it has some writing on the backside and you flip it over.<br>
-        <i>Bring boxes to the 6th floor, the janitors room at the end of the hallway</i><br>
+        <b>Bring boxes to the 6th floor, the janitors room at the end of the hallway</b><br>
+        You ponder: <i>Maybe he is in his appartment?</i> <br>
+        As you lift your eyes from the note you notice a window.
         `,
         links: [
-            passageLink("foyer_2", "Leave office"),
+            passageLink("foyer_3", "Leave office"),
+            passageLink("janitors_office_3", "Look through the window"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
+        next: null,
+    },
+    janitors_office_3: {
+        text: `You stare out the window into the deep darkness of the night and think deep thoughts:`,
+        links: [
+            passageLink("easter", '<i>"I wonder..."</i>'),
+        ],
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     janitors_floor_1: {
@@ -512,8 +614,10 @@ const passages = {
         links: [
             passageLink("floor_select", `Back to staircase`),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: true,
+        items: {
+            extinguisher: { use: true, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: "janitors_floor_2",
     },
     janitors_floor_2: {
@@ -526,8 +630,10 @@ const passages = {
         links: [
             passageLink("janitors_floor_3", "Knock on the door"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     janitors_floor_3: {
@@ -540,8 +646,10 @@ const passages = {
         links: [
             passageLink("janitors_floor_4", "Go inside"),
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: false }
+        },
         next: null,
     },
     janitors_floor_4: {
@@ -555,23 +663,26 @@ const passages = {
         `,
         links: [
             passageLink("floor_select", "Go back to staircase"),
-            itemPickup(items.flashlight.name, items.flashlight.text)
+            // itemPickup(items.flashlight)
         ],
-        canUseFlashlight: false,
-        canUseExtinguisher: false,
+        items: {
+            extinguisher: { use: false, pickup: false, },
+            flashlight: { use: false, pickup: true }
+        },
         next: null,
     },
+
 };
 
 
 
-function itemPickup(name, data) {
+function itemPickup({ name, text }) {
     var aDiv = document.createElement("div");
     var a = document.createElement("a");
     a.setAttribute("href", "#");
     a.setAttribute("name", name);
     a.classList.add("itemPickup");
-    a.setAttribute("text", data);
+    a.setAttribute("text", text);
     a.setAttribute("onclick", `main.inventory.addToInventory(this)`);
     a.appendChild(document.createTextNode("Pick up " + name));
     aDiv.appendChild(a);
@@ -584,7 +695,8 @@ function passageLink(passage, text) {
     a.setAttribute("href", "#");
     a.classList.add("passageLink");
     if (passage) a.setAttribute("onclick", `main.goToPassage(passages["${passage}"])`);
-    a.appendChild(document.createTextNode(text));
+    // a.appendChild(document.createTextNode(text));
+    a.innerHTML = text;
     aDiv.appendChild(a);
     return aDiv;
 };
