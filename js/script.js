@@ -151,10 +151,10 @@ class Main {
     addItemTextToPassage(passage) {
         var mod = "";
         const { extinguisher, flashlight } = passage.items;
-        if (this.inventory.currentInventory.length > 0) {
-            if (extinguisher.use) mod = items.extinguisher.can;
-            if (flashlight.use) mod = items.flashlight.can;
-        } else {
+
+        if (extinguisher.use) mod = items.extinguisher.can;
+        if (flashlight.use) mod = items.flashlight.can;
+        if (this.inventory.currentInventory.length == 0) {
             if (extinguisher.use) mod = items.extinguisher.cant;
             if (flashlight.use) mod = items.flashlight.cant;
         }
