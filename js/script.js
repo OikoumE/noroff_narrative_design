@@ -1,5 +1,5 @@
 // File: script.js - noroff Narrative 2023
-// Author: itsOiK
+// Author: it'sOiK
 // Date: 24/01-23
 console.log('[script:0]: test');
 
@@ -22,25 +22,12 @@ getElId("dev_go").onclick = () => { main.goToPassage(passages[getElId("lal").val
 getElId("dev_x").onclick = () => { inventoryElm.style.display == "none" ? inventoryElm.style.display = "block" : inventoryElm.style.display = "none"; };
 getElId("dev_z").onclick = () => {
 
-    getElId("dev_canvas").classList.toggle("dev_canv_hidden");
-    // TODO PLACEHOLDER
-    // TODO PLACEHOLDER
-    // TODO PLACEHOLDER
-    // TODO PLACEHOLDER
-    // TODO PLACEHOLDER
-
-
-    const outerDiv = document.createElement("div"),
-        canvas = document.createElement("canvas"),
-        c = document.createElement("div"),
-        d = document.createElement("div");
-
-
-
-
+    canvasDiv.classList.toggle("dev_canv_hidden");
 
 
 };
+
+
 
 
 
@@ -100,7 +87,7 @@ class Inventory {
         }
         this.currentInventory.push(new Item(itemPickupLink, this));
         var parentDiv = itemPickupLink.parentElement;
-        // find index of itemPickupLink to remove its <hr>
+        // find index of itemPickupLink to remove it's <hr>
         const index = Array.from(navigation.children).indexOf(parentDiv);
         navigation.children[index + 1].remove();
         parentDiv.remove();
@@ -216,15 +203,15 @@ const items = {
         text: `You spray the fire with the extinguisher, trying to focus on the base of it. 
         The Extinguisher spitters and spatters what few droplets it has left and you eventually defeat the blazing flames`,
         can: `${dialogue.thoughts("I have to try to put out this fire!")}`,
-        cant: `${dialogue.thoughts("I need something to put out this fire with")}`
+        cant: `${dialogue.thoughts("I need something to put out this fire with!")}`
     },
     flashlight: {
         name: "Flashlight",
         text: `Your flashlight illuminates the damp basement and reveals a large room that has several doors.<br>
-        ${dialogue.thoughts("This is where people used to store potatoes back in the day, now its mostly used for personal storage by the tenants.")}<br>
+        ${dialogue.thoughts("This is where people used to store potatoes back in the day, now it's mostly used for personal storage by the tenants.")}<br>
         There are many thoughts rushing through your mind, amongst them are pleasent memories from a time long past.<br>
         You spot the door that had light shining through the keyhole and approach it.`,
-        can: `${dialogue.thoughts("I can use my flashlight here so i can see!")}`,
+        can: `${dialogue.thoughts("I can use my flashlight here so I can see!")}`,
         cant: `${dialogue.thoughts("I can't see shit! I will need something to light up this place with!")}`
     }
 };
@@ -276,12 +263,12 @@ const passages = {
     },
     intro: {
         text: `You abruptly wake up at the darkest hour of the night, remove the small boulders 
-        that has had time to accumulate in your eyes, before you notice the smell of smoke. <br><br>
+        that have had time to accumulate in your eyes, before you notice the smell of smoke. <br><br>
         ${dialogue.thoughts("What's going on here?")} ..you think to yourself as you mutter the words; 
         ${dialogue.speech("Is something burning?")}<br><br>
         You lurch out of the bed and slow as a sloth on a hot summers day, you stumble around in the dark, 
         turning on light after light, trying to see if there is something wrong. <br>
-        You slowly come to the conclusion that atleast your apartment is not on fire.<br><br>
+        You slowly come to the conclusion that at least your apartment is not on fire.<br><br>
         ${dialogue.thoughts("Well thats a relief, but what is this hellish smell of smoke, and where does it come from?")}<br><br>
         From the pile of a weeks worth of used clothes at the foot of your bed you equip a few random items.
 
@@ -299,11 +286,11 @@ const passages = {
         text: `As you exit your apartment you come to the realization; <br><br>
         ${dialogue.thoughts("Why is there no alarm ringing? With this strong smell of smoke there has to be a fire nearby")}<br><br>
         You enter the dark hallway that has obvious signs that nobody has been here in a while. <br><br>
-        ${dialogue.speech("These damn lightsensors are so bad!")} ..you squeal out whilst stumping your toe against something in the dark.<br><br>
+        ${dialogue.speech("These damn light sensors are so bad!")} ..you squeal out whilst stumping your toe against something in the dark.<br><br>
         ${dialogue.speech("BLOODY HELL! Wha.. what the heck!?")}<br><br>
         You crouch to the floor to avoid any other damages, and feel around for whatever exploited your foot in the darkness.
         When suddenly a bright flash of light blinds your unaccustomed eyes as the lights turn on.
-        After recovering from the dazzle, you spot a fire extinguisher pleading innocence laying across the floor, out of its place.`,
+        After recovering from the dazzle, you spot a fire extinguisher pleading innocence laying across the floor, out of it's place.`,
         links: [
             passageLink("elevator", "Take the elevator"),
             passageLink("foyer_1", "Take the stairs"),
@@ -317,7 +304,7 @@ const passages = {
     elevator: {
         text: `There is a big red label on the elevator stating: 
         <p style="color:white;background-color: red;text-align: center;width: 50%;">
-        IN CASE OF FIRE, <br>DO NOT USE ELEVATOR, <br>USE STAIRS)}`,
+        IN CASE OF FIRE, <br>DO NOT USE ELEVATOR, <br>USE STAIRS</p>`,
         links: [
             passageLink("foyer_1", "Take the stairs instead"),
         ],
@@ -341,7 +328,7 @@ const passages = {
     foyer_1: {
         text: `In a hurry you stumble into the foyer.<br><br>
         ${dialogue.thoughts("These lights are never turned off..")} ..you notice while you get back on your feet.<br><br>
-        ${dialogue.thoughts("I should go to the parking lot, thats the one thing i remember from previous fire drills, 'In case of emergency, gather at the parkinglot' they kept hammering into our heads'")}`,
+        ${dialogue.thoughts("I should go to the parking lot, thats the one thing I remember from previous fire drills, 'In case of emergency, gather at the parking lot' they kept hammering into our heads'")}`,
         links: [
             passageLink("outside_building_1", "Go outside."),
         ],
@@ -354,7 +341,7 @@ const passages = {
     foyer_2: {//TODO
         text: `The person has left and you continue down the foyer alone, trying to figure out why 
         the alarms are not ringing and where the stench is coming from.You see the janitor's 
-        office door at the end of the hallway, on the oposite side of the room you see the door to the staircase next to the elevator.
+        office door at the end of the hallway, on the opposite side of the room you see the door to the staircase next to the elevator.
         There is a fire extinguisher infront of the elevator, that seems to have been thrown away in a hurry.
         `,
         links: [
@@ -367,8 +354,8 @@ const passages = {
         next: null,
     },
     foyer_3: {
-        text: `You are back in the foyer where you have been houndred's of times before.<br><br>
-        ${dialogue.thoughts("What should i do next?")} ..you think to yourself.<br><br>
+        text: `You are back in the foyer where you have been houndreds of times before.<br><br>
+        ${dialogue.thoughts("What should I do next?")} ..you think to yourself.<br><br>
         `,
         links: [
             passageLink("staircase", `Go to staircase`),
@@ -383,7 +370,7 @@ const passages = {
     //     text: `""`,//TODO
     //     links: [
     //         passageLink("foyer_2", `""`),//TODO
-    //         passageLink("foyer_2", `"i dont know, i recently moved here, maybe ask the janitor?"`),//TODO
+    //         passageLink("foyer_2", `"I don't know, I recently moved here, maybe ask the janitor?"`),//TODO
     //     ],
     //     items: {
     //         extinguisher: { use: false, pickup: false, },
@@ -394,8 +381,8 @@ const passages = {
     dialogue_2: {
         text: `"same here, why are the alarms not ringing?"`,//TODO
         links: [
-            passageLink("foyer_2", `"i dont have time for this, im late for work!"`),//TODO
-            passageLink("foyer_2", `"i dont know, i recently moved here, maybe ask the janitor?"`),//TODO
+            passageLink("foyer_2", `"I don't have time for this, I'm late for work!"`),//TODO
+            passageLink("foyer_2", `"I don't know, I recently moved here, maybe ask the janitor?"`),//TODO
         ],
         items: {
             extinguisher: { use: false, pickup: false, },
@@ -404,10 +391,10 @@ const passages = {
         next: null,
     },
     outside_building_1: {
-        text: `You are outside the building, there are nobody else around. Not a single sound can be heard, 
-        its darker than the center of a black hole, and you cannot see further than a few meters away.<br><br>
-        ${dialogue.thoughts("Hmm.. That's weird.. How come i can't even see the streetlights?")}<br><br>
-        You are curious as to why nothing is illuminated beyond the parkinglot.
+        text: `You are outside the building, there is nobody else around. Not a single sound can be heard, 
+        it's darker than the center of a black hole, and you cannot see further than a few meters away.<br><br>
+        ${dialogue.thoughts("Hmm.. That's weird.. How come I can't even see the streetlights?")}<br><br>
+        You are curious as to why nothing is illuminated beyond the parking lot.
         <br>
         `,
         links: [
@@ -447,7 +434,7 @@ const passages = {
     outside_leave: {
         text: `As you are nearing the darkness you are struck back with a flood of thoughts; <br><br>
         ${dialogue.thoughts(`Am I really going to leave all those people left inside? The building is potentially 
-        on fire and no alarm has triggered! Nobody know's about the impending danger! I can't leave without alerting 
+        on fire and no alarm has triggered! Nobody knows about the impending danger! I can't leave without alerting 
         someone or doing something about the situation first!`)}`,
         links: [
             passageLink("outside_building_2", "Turn Back"),
@@ -461,8 +448,8 @@ const passages = {
     enter_building: {//TODO
         text: `You go back inside the building and meet someone exiting.They are equipped with a dapper suit and look ready to go to the likes of a fancy party.<br>
             You stop the person and ask them; <br> <br>
-            ${dialogue.speech("Hey! Are you OK!? Do you know where the fire is, or smell is coming from?")}<br>
-            ${dialogue.npc("Yeah, I'm OK thanks! Fire!? Smell!? What are you talking about?")}<br>
+            ${dialogue.speech("Hey! Are you OK? Do you know where the fire is, or where the smell is coming from?")}<br>
+            ${dialogue.npc("Yeah, I'm OK thanks! Fire? Smell? What are you talking about?")}<br>
             ${dialogue.speech("What!? You can't tell the whole building reeks of smoke?")}<br>
             ${dialogue.npc("I don't have time for this, I'm late for work!")}<br><br>
             The person brushes you off and leaves the building.<br>
@@ -509,7 +496,7 @@ const passages = {
         next: null,
     },
     other_floors: {
-        text: `Everything seem to be in order here.`,
+        text: `Everything seems to be in order here.`,
         links: [
             passageLink("floor_select", `Back to staircase`),
         ],
@@ -520,9 +507,9 @@ const passages = {
         next: null,
     },
     basement_1: {
-        text: `You enter the basement, its a cold, damp and dark basement with a distinct smell of old potatoes. <br>
+        text: `You enter the basement, it is a cold, damp and dark basement with a distinct smell of old potatoes. <br>
         These kind of basements always reminded you of when you were a child.<br>
-        It's dark, except for a sliver of light shining from a keyhole at the oposite side of the room.<br>
+        It's dark, except for a sliver of light shining from a keyhole at the opposite side of the room.<br>
         `,
         links: [
             passageLink("floor_select", `Back to staircase`),
@@ -563,8 +550,8 @@ const passages = {
         next: null,
     },
     floor_04: {
-        text: `This is the floor you live in. You know this hallway, you have been here houndreds of times before, but something is off.
-        Something is different. You cant quite put your finger on what it is.<br>
+        text: `This is the floor you live in. You know this hallway, you have been here houndreds of times before, but something is off. //TODO change "you have been here houndreds of times before" reused
+        Something is different. You can't quite put your finger on what it is.<br>
         ${dialogue.thoughts("Why does it feel like ive never been here before?")}<br>
 
         `,
@@ -578,15 +565,15 @@ const passages = {
         next: null,
     },
     floor_04_1: {
-        text: `As you walk around the hallways your are taken away by thoughts about the past<br>
-        ${dialogue.thoughts("I know I've been here, I live here! Why does it feel like ive never been here before?")}<br>
+        text: `As you walk around the hallways you are taken away by thoughts about the past<br>
+        ${dialogue.thoughts("I know I've been here, I live here! Why does it feel like I've never been here before?")}<br> //TODO repetion "I've"
         You keep walking down the hall but it seems you are gaining no distance.<br>
         After walking for a little bit there is a faint rythmic sound coming from behind. Clang.... Clang... Clang.. <br>
         The clanging sound intensifies in both volume and speed. <br>
-        "This sound, it is familiar, ive heard this before somewhere before."<br>
-        `,
+        "This sound, it is familiar, I've heard this before somewhere before."<br> 
+        `,//TODO repetion "I've"        ^
         links: [
-            passageLink("floor_04_2", '${dialogue.thoughts("What`s that sound?")}'),
+            passageLink("floor_04_2", `${dialogue.thoughts("What is that sound?")}`),
         ],
         items: {
             extinguisher: { use: false, pickup: false, },
@@ -595,13 +582,13 @@ const passages = {
         next: null,
     },
     floor_04_2: {
-        text: `Suddenly the air becomes thick and viscous, almost glue like. The lights gets dimmer and dimmer until you are surrounded by nothing but darkness.<br><br>
+        text: `Suddenly the air becomes thick and viscous, almost glue like. The lights get dimmer and dimmer until you are surrounded by nothing but darkness.<br><br>
         You hear a gentle, firm and familiar voice: ${dialogue.npc("Are you ready?")}<br>
         ${dialogue.speech("I.. I'm afraid.. What is happening?")}<br>
-        The voice responds sligthly irritated; ${dialogue.npc("Stop fooling around, come on let us go!")} <br>
+        The voice responds slightly irritated; ${dialogue.npc("Stop fooling around, come on let us go!")} <br>
         You utter with a shivering voice; ${dialogue.speech("Wh.. Who are you? W.. What.. is this?")}<br><br>
-        The lights are getting brighter and brigther again. You realize you are not in your apartment building anymore and cry out: ${dialogue.speech("Where am I!?")}<br>
-        The visous air looses its grip on you and you can feel you are standing on solid ground and the light is bright enough that you can see where you are now.<br><br>
+        The lights are getting brighter and brighter again. You realize you are not in your apartment building anymore and cry out: ${dialogue.speech("Where am I!?")}<br>
+        The viscous air loses it's grip on you and you can feel you are standing on solid ground and the light is bright enough that you can see where you are now.<br><br>
         You see the shape of a person, crouched on the floor over a toolbox, you shout from the top of your lungs; ${dialogue.speech("DAD!? IS THAT YOU!?")}<br>
         You start to recognize where you are.
         `,
@@ -614,10 +601,10 @@ const passages = {
         },
         next: null,
     },
-    floor_04_3: {
-        text: `The figure crouched on the floor is impatiently banging a wrench on the toolbox. That rythm.. You have known this rythm your whole life,
-        you hum it in the shower, when driving, all of the time you hum this rythm.<br>
-        You feel warm and at ease by this rythm and let out another cry: "DAD! It's me! You'r son!"..<br>
+    floor_04_3: {//TODO "rhythm" repetative
+        text: `The figure crouched on the floor is impatiently banging a wrench on the toolbox. That rhythm.. You have known this rhythm your whole life,
+        you hum it in the shower, when driving, all of the time you hum this rhythm.<br>
+        You feel warm and at ease by this rhythm and let out another cry: "DAD! It's me! Your son!"..<br>
         He cannot hear you, he does not respond.. "DAAAD!!".. <br>
         He looks up, stops banging the toolbox, and throws the wrench into the toolbox. "Ahh there you are, ready to go now?".<br>
         You hear footsteps approaching from behind.
@@ -632,9 +619,9 @@ const passages = {
         next: null,
     },
     floor_04_4: {
-        text: `You turn around and is immediatly struck by an ambivalent feeling when you see what is approaching.<br>
+        text: `You turn around and are immediatly struck by an ambivalent feeling when you see what is approaching.<br>
         On one hand you are scared out of your mind, on the other you are relieved.<br>
-        Another human shape, this time the one of a young boy running into the garage. ${dialogue.thoughts("Is.. It cant be!.. Is that me!?")}<br>
+        Another human shape, this time the one of a young boy running into the garage. ${dialogue.thoughts("Is.. It can't be!.. Is that me!?")}<br>
         The shape of the small boy runs straight through you like as if you were not even there.<br>
         As the boy gets close to the other shape, he stands up from the toolbox and reaches out to accept the boy in embrace.
         `,
@@ -648,9 +635,9 @@ const passages = {
         next: null,
     },
     floor_04_5: {
-        text: `The shapes slowly fade and they whisk out of the garage leaving you standing there. You try to follow but you cant move. Your feet are stuck.<br>
+        text: `The shapes slowly fade and they whisk out of the garage leaving you standing there. You try to follow but you can't move. Your feet are stuck.<br>
         It is like if you were stuck in something sticky and viscous. You shout: "NO! Don't leave!", but the air is becoming impossible to breathe.<br>
-        ${dialogue.thoughts("I cant move, I cant speak.")} You struggle to remain conscious trying to let out another cry: "Don't leave me here!" but with no effect<br>
+        ${dialogue.thoughts("I can't move, I can't speak.")} You struggle to remain conscious trying to let out another cry: "Don't leave me here!" but with no effect<br>
         `,
         links: [
             passageLink("floor_04_6", '"Wha.. Who is this?"'),
@@ -663,7 +650,7 @@ const passages = {
     },
     floor_04_6: {
         text: `This is the floor you live in. You know this hallway, you have been here houndreds of times before, but something is off.
-        Something is different. You cant quite put your finger on what it is.<br>
+        Something is different. You can't quite put your finger on what it is.<br>
         ${dialogue.thoughts("Why does it feel like ive never been here before?")}<br>
         `,
         links: [
@@ -676,7 +663,7 @@ const passages = {
         next: null,
     },
     janitors_door: {
-        text: `You knock on the janitor's door and get no answer, you feel the doorknob, it's locked, in slight panick you start pounding it.
+        text: `You knock on the janitor's door and get no answer, you feel the doorknob, it's locked, in slight panic you start pounding it.
         While almost demolishing the door you realize that his office hours are listed there and since it is the middle of the night,
         he is obviously not in right now.<br>
         A gentle feeling surrounds your body when a comforting sound of heavy footsteps approaches from behind.<br>
@@ -684,8 +671,8 @@ const passages = {
         You feel all the muscles of your face twitch, forcing you to smile, at the same time a sense of relief washes over you as you think;<br><br>
         ${dialogue.thoughts("He must've been called in because of the fire")} <br><br>
         ${dialogue.speech("Eh.. Hello? Is anybody there?")} ..you ask, but when you look,
-        there are nobody in sight and the sound suddenly stops!<br> <br>
-        Looking around the foyer in confusion, you notice that the janitor's door is unlocked and sligthly open.
+        there is nobody in sight and the sound suddenly stops!<br> <br>
+        Looking around the foyer in confusion, you notice that the janitor's door is unlocked and slightly open.
         `,
         links: [
             passageLink("janitors_office_1", `Open the door`),
@@ -697,11 +684,11 @@ const passages = {
         next: null,
     },
     janitors_office_1: {
-        text: `You peak inside the office, there is nobody there. It looks to be abandoned, and has been for quite some time.<br>
+        text: `You peek inside the office, there is nobody there. It looks to be abandoned, and has been for quite some time.<br>
         A thick blanket of dust covers everything and the air is dry and difficult to breathe.<br>
-        You flick the lightswitch on, and the lightbulb briefly flashes before quickly dying while emitting a sharp, high pitched pop.<br>
-        The sound makes you jump, barelly lifting your feet of the ground, you can't help but to think;<br><br>
-        ${dialogue.thoughts("That must've been an really old bulb!")} <br><br>
+        You flick the light switch on, and the light bulb briefly flashes before quickly dying while emitting a sharp, high pitched pop.<br>
+        The sound makes you jump, barely lifting your feet of the ground, you can't help but to think;<br><br>
+        ${dialogue.thoughts("That must've been a really old bulb!")} <br><br>
         As you navigate the office only illuminated by the light from the doorway you come upon some old cardboard boxes
         with clothes that looks to be several decades old. <br>
         Some of the items seem familiar, yet you have never seen them before in your life!<br>
@@ -717,8 +704,8 @@ const passages = {
         next: null,
     },
     janitors_office_2: {
-        text: `On the note there are some squigglies that are not legible. You notice it has some writing on the backside and you flip it over.<br><br>
-        <b>'Bring boxes to the janitor's new appartment'</b> ..it says<br><br>
+        text: `On the note there are some squiggles that are not legible. You notice it has some writing on the backside and you flip it over.<br><br>
+        <b>'Bring boxes to the janitor's new apartment'</b> ..it says<br><br>
         As you lift your eyes from the note you notice a window and wonder; <br><br>
         ${dialogue.thoughts("Maybe he is in his appartment?")}.
         `,
@@ -745,7 +732,7 @@ const passages = {
     },
     janitors_floor_1: {
         text: `You exit the staircase and are met with a plume of dreadful, suffocating smoke that immediately darkens the room.<br>
-        The bright light from the fire casts amazing contrasting shadows that dances on the walls instilling bonechilling fear throughout your body.<br>
+        The bright light from the fire casts amazing contrasting shadows that dance on the walls instilling bone-chilling fear throughout your body.<br>
         `,
         links: [
             passageLink("floor_select", `Back to staircase`),
@@ -758,7 +745,7 @@ const passages = {
     },
     janitors_floor_2: {
         text: `After the flames die out you are able to go down the hallway where you notice a door ajar.<br>
-        ${dialogue.thoughts("I hope whoever lives there are OK, i better take a look")}<br>
+        ${dialogue.thoughts("I hope whoever lives there is OK, I better take a look")}<br>
         "H.. Hello!?" you stutter, right before you see the door suddenly slam shut with a loud <b>bam!</b><br>
         As a being of curiosity you walk down the hallway, over the charred pieces of hardwood flooring that cracked and splintered from the fire.<br>
         Sounds of crumbling charcoal under each step as you get closer and closer to the door. <br>
@@ -789,12 +776,12 @@ const passages = {
         next: null,
     },
     janitors_floor_4: {
-        text: `You thread with caution and open the door slowly while peaking inside, carefully querying "Anybody home?"<br>
+        text: `You tread with caution and open the door slowly while peeking inside, carefully querying "Anybody home?"<br>
         The door is fully open and you step over the threshold of the door.<br> "Hello? There's a fire going on somewhere! We need to..."
-        You stop sudden in your tracks overwhelmed with a feeling unlike anything you've ever experienced, and for a moment, everything turns grey.<br>
-        It's like the silent black and white movies of yore. As you stand there in confusion everything slowly start to regain color.<br>
+        You stop suddenly in your tracks overwhelmed with a feeling unlike anything you've ever experienced, and for a moment, everything turns grey.<br>
+        It's like the silent black and white movies of yore. As you stand there in confusion everything slowly starts to regain color.<br>
         ${dialogue.thoughts("I shouldn't be here, something is off with this place.")}<br>
-        You notice a flashlight hanging from the old wooden clothes hangers next to the door.
+        You notice a flashlight hanging from the old wooden pegs next to the door.
         `,
         links: [
             passageLink("floor_select", "Go back to staircase"),
@@ -827,6 +814,7 @@ function passageLink(passage, text) {
     var aDiv = document.createElement("div");
     var a = document.createElement("a");
     a.setAttribute("href", "#");
+    a.setAttribute("id", passage);
     a.classList.add("passageLink");
     if (passage) a.setAttribute("onclick", `main.goToPassage(passages["${passage}"])`);
     // a.appendChild(document.createTextNode(text));
@@ -844,3 +832,99 @@ function itemButton(item, parent) {
     parent.appendChild(a);
 };
 
+const canvasDiv = getElId("dev_canvas");
+const canvas = getElId("canvas_");
+const ctx = canvas.getContext("2d");
+const rectPassage = {};
+const rectWidth = 50, rectHeight = 50;
+
+console.log('[script:31]: Object.keys(passages)', Object.keys(passages));
+
+function boxPassages() {
+    Object.keys(passages).forEach((passage, i) => {
+
+        const posX = (rectWidth * 1.25 * i) + 15, posY = 15;
+        ctx.fillStyle = "green";
+        ctx.fillRect(posX, posY, rectWidth, rectHeight);
+        ctx.font = "20px Arial bold";
+        ctx.fillStyle = "black";
+        ctx.fillText(passage, posX - ctx.measureText(passage).width / 2 + rectWidth / 2, posY + rectHeight / 2);
+        rectPassage[passage] = {
+            pos: { x: posX, y: posY }
+        };
+    });
+}
+
+function passageLinkers() {
+    Object.keys(passages).forEach((passage, i) => {
+
+        const passageLinks = passages[passage].links.map(x => x.firstChild.id);
+        console.log('[script:35]: passage next:', passageLinks);
+
+        passageLinks.forEach((p, j) => {
+            if (p != "null") {
+                var { x: x1, y: y1 } = rectPassage[passage].pos;
+                var { x: x2, y: y2 } = rectPassage[p].pos;
+                x1 += rectHeight / 2;
+                y1 += rectHeight / 2;
+                x2 += rectHeight / 3;
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x1, y1 + 50 + (i * 15));
+                ctx.lineTo(x2, y2 + 50 + (i * 15));
+                ctx.lineTo(x2, y2 + rectHeight);
+                arrow(x2, y2 + rectHeight);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = `rgb(
+                    0,
+                    ${Math.floor(Math.random() * 255)},
+                    ${Math.floor(Math.random() * 255)})`;
+                ctx.stroke();
+                ctx.closePath();
+            }
+        });
+    });
+}
+
+function passageArc() {
+    Object.keys(passages).forEach((passage, i) => {
+
+        const passageLinks = passages[passage].links.map(x => x.firstChild.id);
+        console.log('[script:35]: passage next:', passageLinks);
+
+        passageLinks.forEach((p, j) => {
+            var p2 = { x: 100, y: 100 },
+                p1 = { x: 111, y: 30.9 },
+                p3 = { x: 149.5, y: 149.5 },
+                diffX = p1.x - p2.x,
+                diffY = p1.y - p2.y,
+                radius = Math.abs(Math.sqrt(diffX * diffX + diffY * diffY)),
+                startAngle = Math.atan2(diffY, diffX),
+                endAngle = Math.atan2(p3.y - p2.y, p3.x - p2.x),
+                ctx = document.querySelector("canvas").getContext("2d");
+
+            // arc
+            ctx.arc(p2.x, p2.y, radius, startAngle, endAngle, false);
+            ctx.stroke();
+        });
+    });
+}
+
+
+function arrow(x, y) {
+    // ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + 5, y + 10);
+    ctx.lineTo(x - 5, y + 10);
+    ctx.lineTo(x, y);
+    // ctx.closePath();
+
+}
+
+(() => {
+    boxPassages();
+    passageLinkers();
+    arrow(500, 500);
+})();
+
+console.log('[script:858]: rectPassage', rectPassage);

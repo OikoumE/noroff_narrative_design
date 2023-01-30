@@ -211,7 +211,7 @@
                 display: inline
             }
 
-            @media only screen and (max-width: 1000px) {
+            @media only screen and (max-width: 1250px) {
                 html {
                     font-size: 1.5em;
                 }
@@ -220,7 +220,7 @@
 
             #dev_canvas {
                 position: absolute;
-                background-color: #004daa;
+                background-color: #a1a1a1;
                 width: 100vw;
                 height: 100vh;
             }
@@ -228,13 +228,18 @@
             .dev_canv_hidden {
                 display: none;
             }
+
+            #canvas_ {
+                /* width: 100%; */
+                border-style: dashed;
+            }
         </style>
     </head>
 
     <body>
         <div note="DEV ONLY">
             <div id="dev_canvas" class="dev_canv_hidden">
-                <canvas id="canvas" width="100%" height="100%"></canvas>
+                <canvas id="canvas_" width="2500px" height="1250px"></canvas>
             </div>
             <div style="position: absolute;right: 0; color:blue" --darkreader-inline-color:#337dff;
                 data-darkreader-inline-color>
