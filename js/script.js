@@ -20,8 +20,36 @@ const navigation = getElId("navigation");
 // TODO: WORKAREA for: PLACEHOLDER - START:
 getElId("dev_go").onclick = () => { main.goToPassage(passages[getElId("lal").value]); };
 getElId("dev_x").onclick = () => { inventoryElm.style.display == "none" ? inventoryElm.style.display = "block" : inventoryElm.style.display = "none"; };
+getElId("dev_z").onclick = () => {
+
+    getElId("dev_canvas").classList.toggle("dev_canv_hidden");
+    // TODO PLACEHOLDER
+    // TODO PLACEHOLDER
+    // TODO PLACEHOLDER
+    // TODO PLACEHOLDER
+    // TODO PLACEHOLDER
+
+
+    const outerDiv = document.createElement("div"),
+        canvas = document.createElement("canvas"),
+        c = document.createElement("div"),
+        d = document.createElement("div");
+
+
+
+
+
+
+};
+
+
+
 function getKeyByValue(object, value) { return Object.keys(object).find(key => object[key] === value); }
 function updatePassageIndicator(passage) { getElId("dev_y").innerHTML = getKeyByValue(passages, passage); }
+
+
+
+
 // TODO: WORKAREA for: PLACEHOLDER - END:
 
 class Item {
@@ -431,8 +459,8 @@ const passages = {
         next: null,
     },
     enter_building: {//TODO
-        text: `You go back inside the building and meet someone exiting.They are equipped with a dapper suit and look ready to go to the likes of a fancy party.< br >
-            You stop the person and ask them; < br > <br>
+        text: `You go back inside the building and meet someone exiting.They are equipped with a dapper suit and look ready to go to the likes of a fancy party.<br>
+            You stop the person and ask them; <br> <br>
             ${dialogue.speech("Hey! Are you OK!? Do you know where the fire is, or smell is coming from?")}<br>
             ${dialogue.npc("Yeah, I'm OK thanks! Fire!? Smell!? What are you talking about?")}<br>
             ${dialogue.speech("What!? You can't tell the whole building reeks of smoke?")}<br>

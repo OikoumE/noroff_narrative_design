@@ -206,7 +206,7 @@
                 display: inline;
             }
 
-            .npsSpeech {
+            .npcSpeech {
                 color: #3c3c3c;
                 display: inline
             }
@@ -216,14 +216,31 @@
                     font-size: 1.5em;
                 }
             }
+
+
+            #dev_canvas {
+                position: absolute;
+                background-color: #004daa;
+                width: 100vw;
+                height: 100vh;
+            }
+
+            .dev_canv_hidden {
+                display: none;
+            }
         </style>
     </head>
 
     <body>
         <div note="DEV ONLY">
+            <div id="dev_canvas" class="dev_canv_hidden">
+                <canvas id="canvas" width="100%" height="100%"></canvas>
+            </div>
             <div style="position: absolute;right: 0; color:blue" --darkreader-inline-color:#337dff;
                 data-darkreader-inline-color>
-                <button style="width: 70px;" id="dev_x">DEV</button><br>
+                <button style="width: 70px;" id="dev_x">DEV</button>
+                <button style="width: 70px;" id="dev_z">FLW</button><br>
+
                 <div style="display: flex;"> p: <p style="margin: 0;" id="dev_y">null</p>
                 </div>
             </div>
