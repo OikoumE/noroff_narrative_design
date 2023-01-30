@@ -838,47 +838,55 @@ const ctx = canvas.getContext("2d");
 const rectPassage = {};
 const rectWidth = 50, rectHeight = 50;
 
-console.log('[script:31]: Object.keys(passages)', Object.keys(passages));
-
 function boxPassages() {
     Object.keys(passages).forEach((passage, i) => {
-
-        const posX = (rectWidth * 1.25 * i) + 15, posY = 15;
-        ctx.fillStyle = "green";
+        const posX = i * (rectWidth + 15),
+            posY = 25,
+            color = `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
+        ctx.fillStyle = color;
         ctx.fillRect(posX, posY, rectWidth, rectHeight);
-        ctx.font = "20px Arial bold";
-        ctx.fillStyle = "black";
-        ctx.fillText(passage, posX - ctx.measureText(passage).width / 2 + rectWidth / 2, posY + rectHeight / 2);
         rectPassage[passage] = {
-            pos: { x: posX, y: posY }
+            pos: { x: posX, y: posY },
+            color: color
         };
     });
 }
-
-function passageLinkers() {
+function doText() {
     Object.keys(passages).forEach((passage, i) => {
+        var posY = 15, mod = 0;
+        if (i % 2 === 0) mod = 30;
+        passage.split("_").forEach((word, j) => {
+            var posX = (rectPassage[passage].pos.x + (rectWidth / 2)) - (ctx.measureText(word).width / 2);
+            if (i === 0) { posX = 0; }
+            ctx.font = "bold 20px Arial";
+            ctx.fillStyle = "white";
+            ctx.fillText(word, posX, (posY * j) + posY + mod);
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 1;
+            ctx.strokeText(word, posX, (posY * j) + posY + mod);
+        });
+    });
+}
+function passageLinkers() {
 
-        const passageLinks = passages[passage].links.map(x => x.firstChild.id);
-        console.log('[script:35]: passage next:', passageLinks);
-
-        passageLinks.forEach((p, j) => {
+    Object.keys(passages).forEach((passage, i) => {
+        passages[passage].links.map(x => x.firstChild.id).forEach((p, j) => {
             if (p != "null") {
                 var { x: x1, y: y1 } = rectPassage[passage].pos;
                 var { x: x2, y: y2 } = rectPassage[p].pos;
+                ctx.strokeStyle = rectPassage[passage].color;
+                ctx.lineWidth = 5;
                 x1 += rectHeight / 2;
                 y1 += rectHeight / 2;
                 x2 += rectHeight / 3;
+                y2 += rectHeight / 2;
+                var xToX = rectHeight + (Math.ceil(Math.abs(x1 - x2) / 62.5) * 25);
                 ctx.beginPath();
                 ctx.moveTo(x1, y1);
-                ctx.lineTo(x1, y1 + 50 + (i * 15));
-                ctx.lineTo(x2, y2 + 50 + (i * 15));
-                ctx.lineTo(x2, y2 + rectHeight);
-                arrow(x2, y2 + rectHeight);
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = `rgb(
-                    0,
-                    ${Math.floor(Math.random() * 255)},
-                    ${Math.floor(Math.random() * 255)})`;
+                ctx.lineTo(x1, y1 + xToX);
+                ctx.lineTo(x2, y2 + xToX);
+                ctx.lineTo(x2, y2 + rectHeight / 2);
+                arrow(x2, y2 + rectHeight / 2);
                 ctx.stroke();
                 ctx.closePath();
             }
@@ -886,45 +894,16 @@ function passageLinkers() {
     });
 }
 
-function passageArc() {
-    Object.keys(passages).forEach((passage, i) => {
-
-        const passageLinks = passages[passage].links.map(x => x.firstChild.id);
-        console.log('[script:35]: passage next:', passageLinks);
-
-        passageLinks.forEach((p, j) => {
-            var p2 = { x: 100, y: 100 },
-                p1 = { x: 111, y: 30.9 },
-                p3 = { x: 149.5, y: 149.5 },
-                diffX = p1.x - p2.x,
-                diffY = p1.y - p2.y,
-                radius = Math.abs(Math.sqrt(diffX * diffX + diffY * diffY)),
-                startAngle = Math.atan2(diffY, diffX),
-                endAngle = Math.atan2(p3.y - p2.y, p3.x - p2.x),
-                ctx = document.querySelector("canvas").getContext("2d");
-
-            // arc
-            ctx.arc(p2.x, p2.y, radius, startAngle, endAngle, false);
-            ctx.stroke();
-        });
-    });
-}
-
-
 function arrow(x, y) {
-    // ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x + 5, y + 10);
     ctx.lineTo(x - 5, y + 10);
     ctx.lineTo(x, y);
-    // ctx.closePath();
-
 }
 
 (() => {
     boxPassages();
     passageLinkers();
-    arrow(500, 500);
-})();
+    doText();
 
-console.log('[script:858]: rectPassage', rectPassage);
+})();
