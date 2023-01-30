@@ -8,7 +8,7 @@
     <head>
         <meta charset="UTF-8">
         <title>TwineClone™️</title>
-
+        <link href='https://fonts.googleapis.com/css?family=JetBrains Mono' rel='stylesheet'>
         <style>
             html,
             body {
@@ -23,7 +23,8 @@
                 box-sizing: border-box;
                 background-color: grey;
                 color: white;
-                font-size: 2.5em;
+                font-size: 2em;
+                font-family: 'JetBrains Mono';
             }
 
             :root {
@@ -70,7 +71,7 @@
             #navigation {
                 border: aliceblue 5px;
                 border-style: outset;
-                background-color: #a6a6a6;
+                background-color: #4d4d4d;
                 height: 30%;
                 border-radius: 15px;
                 box-shadow: 4px 4px 6px 2px black;
@@ -90,7 +91,7 @@
             }
 
             #back {
-                font-size: 2em;
+                font-size: 3em;
                 position: absolute;
                 bottom: 15px;
                 right: 20px;
@@ -117,7 +118,11 @@
             }
 
             a:visited {
-                color: black;
+                color: white;
+            }
+
+            a {
+                color: white;
             }
 
             a:hover {
@@ -144,7 +149,7 @@
             }
 
             button {
-                font-size: 0.5em;
+                font-size: 0.8em;
                 width: 250px;
                 border-radius: 15px;
                 border-style: outset;
@@ -201,9 +206,15 @@
                 display: inline;
             }
 
-            .npsSpeec {
+            .npsSpeech {
                 color: #3c3c3c;
                 display: inline
+            }
+
+            @media only screen and (max-width: 1000px) {
+                html {
+                    font-size: 1.5em;
+                }
             }
         </style>
     </head>
@@ -240,4 +251,3 @@
     </body>
 
 </html>
-
