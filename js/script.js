@@ -874,17 +874,21 @@ function passageLinkers() {
             if (p != "null") {
                 var { x: x1, y: y1 } = rectPassage[passage].pos;
                 var { x: x2, y: y2 } = rectPassage[p].pos;
+                var mod = 10;
                 ctx.strokeStyle = rectPassage[passage].color;
                 ctx.lineWidth = 5;
                 x1 += rectHeight / 2;
                 y1 += rectHeight / 2;
-                x2 += rectHeight / 3;
+                x2 += 10;//rectHeight / 3;
                 y2 += rectHeight / 2;
+
+
                 var xToX = rectHeight + (Math.ceil(Math.abs(x1 - x2) / 62.5) * 25);
                 ctx.beginPath();
                 ctx.moveTo(x1, y1);
                 ctx.lineTo(x1, y1 + xToX);
-                ctx.lineTo(x2, y2 + xToX);
+                if (x1 < x2) mod = -10;
+                ctx.lineTo(x2 + mod, y2 + xToX - 15);
                 ctx.lineTo(x2, y2 + rectHeight / 2);
                 arrow(x2, y2 + rectHeight / 2);
                 ctx.stroke();
