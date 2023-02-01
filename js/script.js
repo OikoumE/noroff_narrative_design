@@ -20,17 +20,6 @@ const navigation = getElId("navigation");
 // TODO: WORKAREA for: PLACEHOLDER - START:
 getElId("dev_go").onclick = () => { main.goToPassage(passages[getElId("lal").value]); };
 getElId("dev_x").onclick = () => { inventoryElm.style.display == "none" ? inventoryElm.style.display = "block" : inventoryElm.style.display = "none"; };
-getElId("dev_z").onclick = () => {
-
-    canvasDiv.classList.toggle("dev_canv_hidden");
-
-
-};
-
-
-
-
-
 function getKeyByValue(object, value) { return Object.keys(object).find(key => object[key] === value); }
 function updatePassageIndicator(passage) { getElId("dev_y").innerHTML = getKeyByValue(passages, passage); }
 
@@ -154,7 +143,13 @@ class Main {
         updatePassageIndicator(passage); //!DEV
         itemResponse.classList.add("item-response-hidden");
         itemResponse.innerHTML = "";
-        if (this.currPassage && !goToPrev) this.passageHistory.push(this.currPassage);
+
+        //TODO get name of passage
+
+        if (this.currPassage && !goToPrev) {
+            this.currPassage.name = Object.keys(passages).find(key => passages[key] === this.currPassage);
+            this.passageHistory.push(this.currPassage);
+        }
         this.currPassage = passage;
         this.clearContainer();
         var modifiedText = this.addItemTextToPassage(passage);
@@ -304,12 +299,15 @@ const passages = {
     elevator: {
         text: `There is a big red label on the elevator stating: 
         <p style="color:white;background-color: red;text-align: center;width: 50%;">
-        IN CASE OF FIRE, <br>DO NOT USE ELEVATOR, <br>USE STAIRS</p>`,
+        IN CASE OF FIRE, <br>DO NOT USE ELEVATOR, <br>USE STAIRS</p>
+        ${dialogue.thoughts("I should probably take the stairs")}<br><br>
+        
+        `,
         links: [
             passageLink("foyer_1", "Take the stairs instead"),
         ],
         items: {
-            extinguisher: { use: false, pickup: false, },
+            extinguisher: { use: false, pickup: true, },
             flashlight: { use: false, pickup: false }
         },
         next: null,
@@ -483,8 +481,8 @@ const passages = {
             passageLink("basement_1", `Basement`),
             passageLink("foyer_3", `Ground Floor`),
             passageLink("other_floors", `Floor 02`),
-            passageLink("floor_04", `Floor 04`),
             passageLink("other_floors", `Floor 03`),
+            passageLink("floor_04", `Floor 04`),
             passageLink("other_floors", `Floor 05`),
             passageLink("janitors_floor_1", `Floor 06`),
             passageLink("other_floors", `Floor 07`),
@@ -733,6 +731,8 @@ const passages = {
     janitors_floor_1: {
         text: `You exit the staircase and are met with a plume of dreadful, suffocating smoke that immediately darkens the room.<br>
         The bright light from the fire casts amazing contrasting shadows that dance on the walls instilling bone-chilling fear throughout your body.<br>
+        ${hasVisitedPassage("janitors_floor_1", "test")}
+        
         `,
         links: [
             passageLink("floor_select", `Back to staircase`),
@@ -776,11 +776,13 @@ const passages = {
         next: null,
     },
     janitors_floor_4: {
-        text: `You tread with caution and open the door slowly while peeking inside, carefully querying "Anybody home?"<br>
-        The door is fully open and you step over the threshold of the door.<br> "Hello? There's a fire going on somewhere! We need to..."
+        text: `You tread with caution and open the door slowly while peeking inside, carefully querying <br><br>
+        ${dialogue.speech("Anybody home?")}<br><br>
+        The door is fully open and you step over the threshold into the dimly lit room.<br><br> 
+        ${dialogue.speech("Hello? There's a fire going on somewhere! We need to...")}<br><br> 
         You stop suddenly in your tracks overwhelmed with a feeling unlike anything you've ever experienced, and for a moment, everything turns grey.<br>
-        It's like the silent black and white movies of yore. As you stand there in confusion everything slowly starts to regain color.<br>
-        ${dialogue.thoughts("I shouldn't be here, something is off with this place.")}<br>
+        It's like the silent black and white movies of yore. As you stand there in confusion everything slowly starts to regain color.<br><br>
+        ${dialogue.thoughts("I shouldn't be here, something is off with this place.")}<br><br>
         You notice a flashlight hanging from the old wooden pegs next to the door.
         `,
         links: [
@@ -817,7 +819,6 @@ function passageLink(passage, text) {
     a.setAttribute("id", passage);
     a.classList.add("passageLink");
     if (passage) a.setAttribute("onclick", `main.goToPassage(passages["${passage}"])`);
-    // a.appendChild(document.createTextNode(text));
     a.innerHTML = text;
     aDiv.appendChild(a);
     return aDiv;
@@ -831,83 +832,98 @@ function itemButton(item, parent) {
     a.appendChild(document.createTextNode("Use " + item.name));
     parent.appendChild(a);
 };
-
-const canvasDiv = getElId("dev_canvas");
-const canvas = getElId("canvas_");
-const ctx = canvas.getContext("2d");
-const rectPassage = {};
-const rectWidth = 50, rectHeight = 50;
-
-function boxPassages() {
-    Object.keys(passages).forEach((passage, i) => {
-        const posX = i * (rectWidth + 15),
-            posY = 25,
-            color = `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
-        ctx.fillStyle = color;
-        ctx.fillRect(posX, posY, rectWidth, rectHeight);
-        rectPassage[passage] = {
-            pos: { x: posX, y: posY },
-            color: color
-        };
-    });
+function hasVisitedPassage(passageName, text) {
+    console.log('[script:830]: passageName', main.passageHistory.map(passage => passage.name == passageName));
+    if (main.passageHistory.map(passage => passage.name == passageName).includes(passageName)) {
+        return text;
+    }
+    return "asdasd";
 }
-function doText() {
-    Object.keys(passages).forEach((passage, i) => {
-        var posY = 15, mod = 0;
-        if (i % 2 === 0) mod = 30;
-        passage.split("_").forEach((word, j) => {
-            var posX = (rectPassage[passage].pos.x + (rectWidth / 2)) - (ctx.measureText(word).width / 2);
-            if (i === 0) { posX = 0; }
-            ctx.font = "bold 20px Arial";
-            ctx.fillStyle = "white";
-            ctx.fillText(word, posX, (posY * j) + posY + mod);
-            ctx.strokeStyle = "black";
-            ctx.lineWidth = 1;
-            ctx.strokeText(word, posX, (posY * j) + posY + mod);
+
+class FlowChart {
+    canvasDiv = getElId("dev_canvas");
+    canvas = getElId("canvas_");
+    ctx = this.canvas.getContext("2d");
+    rectPassage = {};
+    rectWidth = 50;
+    rectHeight = 50;
+    constructor() {
+
+    }
+    init() {
+        getElId("dev_z").onclick = () => { this.canvasDiv.classList.toggle("dev_canv_hidden"); };
+        this.boxPassages();
+        this.passageLinkers();
+        this.doText();
+    }
+    boxPassages() {
+        Object.keys(passages).forEach((passage, i) => {
+            const posX = i * (this.rectWidth + 15),
+                posY = 25,
+                color = `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
+            this.ctx.fillStyle = color;
+            this.ctx.fillRect(posX, posY, this.rectWidth, this.rectHeight);
+            this.rectPassage[passage] = {
+                pos: { x: posX, y: posY },
+                color: color
+            };
         });
-    });
-}
-function passageLinkers() {
-
-    Object.keys(passages).forEach((passage, i) => {
-        passages[passage].links.map(x => x.firstChild.id).forEach((p, j) => {
-            if (p != "null") {
-                var { x: x1, y: y1 } = rectPassage[passage].pos;
-                var { x: x2, y: y2 } = rectPassage[p].pos;
-                var mod = 10;
-                ctx.strokeStyle = rectPassage[passage].color;
-                ctx.lineWidth = 5;
-                x1 += rectHeight / 2;
-                y1 += rectHeight / 2;
-                x2 += 10;//rectHeight / 3;
-                y2 += rectHeight / 2;
-
-
-                var xToX = rectHeight + (Math.ceil(Math.abs(x1 - x2) / 62.5) * 25);
-                ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x1, y1 + xToX);
-                if (x1 < x2) mod = -10;
-                ctx.lineTo(x2 + mod, y2 + xToX - 15);
-                ctx.lineTo(x2, y2 + rectHeight / 2);
-                arrow(x2, y2 + rectHeight / 2);
-                ctx.stroke();
-                ctx.closePath();
-            }
+    }
+    doText() {
+        Object.keys(passages).forEach((passage, i) => {
+            var posY = 15, mod = 0;
+            if (i % 2 === 0) mod = 30;
+            passage.split("_").forEach((word, j) => {
+                var posX = (this.rectPassage[passage].pos.x + (this.rectWidth / 2)) - (this.ctx.measureText(word).width / 2);
+                if (i === 0) { posX = 0; }
+                this.ctx.font = "bold 20px Arial";
+                this.ctx.fillStyle = "white";
+                this.ctx.fillText(word, posX, (posY * j) + posY + mod);
+                this.ctx.strokeStyle = "black";
+                this.ctx.lineWidth = 1;
+                this.ctx.strokeText(word, posX, (posY * j) + posY + mod);
+            });
         });
-    });
+    }
+    passageLinkers() {
+
+        Object.keys(passages).forEach((passage, i) => {
+            passages[passage].links.map(x => x.firstChild.id).forEach((p, j) => {
+                if (p != "null") {
+                    var { x: x1, y: y1 } = this.rectPassage[passage].pos;
+                    var { x: x2, y: y2 } = this.rectPassage[p].pos;
+                    var mod = 10;
+                    this.ctx.strokeStyle = this.rectPassage[passage].color;
+                    this.ctx.lineWidth = 5;
+                    x1 += this.rectHeight / 2;
+                    y1 += this.rectHeight / 2;
+                    x2 += 10;//this.rectHeight / 3;
+                    y2 += this.rectHeight / 2;
+
+
+                    var xToX = this.rectHeight + (Math.ceil(Math.abs(x1 - x2) / 62.5) * 25);
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x1, y1);
+                    this.ctx.lineTo(x1, y1 + xToX);
+                    if (x1 < x2) mod = -10;
+                    this.ctx.lineTo(x2 + mod, y2 + xToX - 15);
+                    this.ctx.lineTo(x2, y2 + this.rectHeight / 2);
+                    this.arrow(x2, y2 + this.rectHeight / 2);
+                    this.ctx.stroke();
+                    this.ctx.closePath();
+                }
+            });
+        });
+    }
+
+    arrow(x, y) {
+        this.ctx.moveTo(x, y);
+        this.ctx.lineTo(x + 5, y + 10);
+        this.ctx.lineTo(x - 5, y + 10);
+        this.ctx.lineTo(x, y);
+    }
+
 }
 
-function arrow(x, y) {
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + 5, y + 10);
-    ctx.lineTo(x - 5, y + 10);
-    ctx.lineTo(x, y);
-}
-
-(() => {
-    boxPassages();
-    passageLinkers();
-    doText();
-
-})();
+const flw = new FlowChart();
+flw.init();
