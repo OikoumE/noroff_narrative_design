@@ -16,12 +16,8 @@ const navigation = getElId("navigation");
 
 
 // TODO: WORKAREA for: PLACEHOLDER - START:
-getElId("dev_go").onclick = () => { (getElId("lal").value.length > 0 ? main.goToPassage(passages[getElId("lal").value]) : console.log('[script:20]: No passage text')); };
+getElId("dev_go").onclick = () => { (getElId("lal").value.length > 0 ? main.goToPassage(passages[getElId("lal").value]) : console.warn('[script:20]: No passage text')); };
 getElId("dev_x").onclick = () => { inventoryElm.style.display == "none" ? inventoryElm.style.display = "block" : inventoryElm.style.display = "none"; };
-var outerDev = getElId("outerDev");
-outerDev.onclick = () => {
-    outerDev.classList.toggle("outerDev");
-};
 function getKeyByValue(object, value) { return Object.keys(object).find(key => object[key] === value); }
 function updatePassageIndicator(passage) { getElId("dev_y").innerHTML = getKeyByValue(passages, passage); }
 // TODO: WORKAREA for: PLACEHOLDER - END:
@@ -35,7 +31,6 @@ class Item {
         this.text = button.getAttribute("text");
     }
     use(usedButton) {
-        console.log('[script:39]: asdasdsa',);
         itemResponse.innerHTML = "";
         itemResponse.classList.toggle("item-response-hidden");
         var passage = this.inventory.main.currPassage;
@@ -163,7 +158,6 @@ class Main {
         if (Object.keys(passage).includes("timeout") && !this.timeoutJokeTimer) {
             this.timeoutJokeTimer = setTimeout(() => {
                 this.goToPassage(passages.timeout);
-                console.log("lol ultra easter egg joke");
             }, 1000 * passage.timeout);
         } else {
             clearTimeout(this.timeoutJokeTimer);
