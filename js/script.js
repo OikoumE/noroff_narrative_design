@@ -798,7 +798,6 @@ const passages = {
 };
 
 
-
 function itemPickup({ name, text }) {
     var aDiv = document.createElement("div");
     var a = document.createElement("a");
