@@ -18,7 +18,7 @@ const navigation = getElId("navigation");
 
 
 // TODO: WORKAREA for: PLACEHOLDER - START:
-getElId("dev_go").onclick = () => { main.goToPassage(passages[getElId("lal").value]); };
+getElId("dev_go").onclick = () => { (getElId("lal").value.length > 0 ? main.goToPassage(passages[getElId("lal").value]) : console.log('[script:20]: No passage text')); };
 getElId("dev_x").onclick = () => { inventoryElm.style.display == "none" ? inventoryElm.style.display = "block" : inventoryElm.style.display = "none"; };
 function getKeyByValue(object, value) { return Object.keys(object).find(key => object[key] === value); }
 function updatePassageIndicator(passage) { getElId("dev_y").innerHTML = getKeyByValue(passages, passage); }
@@ -37,19 +37,22 @@ class Item {
         this.text = button.getAttribute("text");
     }
     use(usedButton) {
-        itemResponse.classList.remove("item-response-hidden");
+        console.log('[script:39]: asdasdsa',);
+        itemResponse.innerHTML = "";
+        itemResponse.classList.toggle("item-response-hidden");
         var passage = this.inventory.main.currPassage;
         var buttonText = "Close";
-
-        const { extinguisher, flashlight } = passage.items;
-        if (extinguisher.use || flashlight.use) {
-            itemResponse.innerHTML = this.text;
-            buttonText = "Continue";
-            while (navigation.children.length > 1) {
-                navigation.firstChild.remove();
+        itemResponse.innerHTML = `Using the ${this.name} would not have any effect here!`;
+        if (Object.keys(passage).includes("items")) {
+            for (const [key, value] of Object.entries(passage.items)) {
+                if (value.use) {
+                    itemResponse.innerHTML = this.text;
+                    buttonText = "Continue";
+                    while (navigation.children.length > 1) {
+                        navigation.firstChild.remove();
+                    }
+                }
             }
-        } else {
-            itemResponse.innerHTML = `Using the ${this.name} would not have any effect here!`;
         }
         itemResponse.innerHTML += `<button onclick="main.closeItemResponseAndGotoPassage(passages['${passage.next}'], ${usedButton.id})">${buttonText}</button>`;
     }
@@ -64,16 +67,6 @@ class Inventory {
         main.updateItems();
     }
     addToInventory(itemPickupLink) {
-        switch (itemPickupLink.name) {
-            case "Extinguisher":
-                this.main.hasExtinguisher = true;
-                break;
-            case "Flashlight":
-                this.main.hasFlashlight = true;
-                break;
-            default:
-                console.error('[script:73]: no case for itemPickupLink.name:', itemPickupLink.name);
-        }
         this.currentInventory.push(new Item(itemPickupLink, this));
         var parentDiv = itemPickupLink.parentElement;
         // find index of itemPickupLink to remove it's <hr>
@@ -93,15 +86,14 @@ class Main {
     inventory = new Inventory(this);
     passageHistory = [];
     currPassage = null;
-    hasExtinguisher = false;
-    hasFlashlight = false;
     constructor() {
         null;
     }
     updateNavigation(passage) {
         navigation.innerHTML = "";
         this.passageLinks(passage); // add passage link
-        this.pickupItemLink(passage.items); // add item picku link
+        if (Object.keys(passage).includes("items"))
+            this.pickupItemLink(passage); // add item pickup link
         // add "#back" button
         navigation.innerHTML += `<div id="back"><a href="#"  onclick="main.goToPrevPassage()">🢀</a></div>`;
         if (this.passageHistory.length == 0) {
@@ -117,14 +109,15 @@ class Main {
             }
         });
     }
-    pickupItemLink({ extinguisher, flashlight }) {
-        var notInInv = (itemName) => !this.inventory.currentInventory.map(invItem => invItem.name).includes(itemName);
-        var add = (item) => {
-            navigation.appendChild(itemPickup(item));
-            appendHr(navigation);
-        };
-        if (notInInv("Extinguisher") && extinguisher.pickup) add(items.extinguisher);
-        if (notInInv("Flashlight") && flashlight.pickup) add(items.flashlight);
+    pickupItemLink(passage) {
+        if (Object.keys(passage).includes("items")) {
+            for (const [itemName, itemValue] of Object.entries(passage.items)) {
+                if (!this.hasItemInInv(itemName) && itemValue.pickup) {
+                    navigation.appendChild(itemPickup(items[itemName]));
+                    appendHr(navigation);
+                }
+            }
+        }
     }
 
     updateItems() {
@@ -143,32 +136,49 @@ class Main {
         updatePassageIndicator(passage); //!DEV
         itemResponse.classList.add("item-response-hidden");
         itemResponse.innerHTML = "";
-
-        //TODO get name of passage
-
         if (this.currPassage && !goToPrev) {
             this.currPassage.name = Object.keys(passages).find(key => passages[key] === this.currPassage);
             this.passageHistory.push(this.currPassage);
         }
         this.currPassage = passage;
         this.clearContainer();
-        var modifiedText = this.addItemTextToPassage(passage);
+        var hasVisitedPassage = this.hasVisitedPassage(passage);
+        var modifiedText = this.addItemTextToPassage(hasVisitedPassage);
         this.populateContainer(modifiedText);
         this.updateItems();
         this.updateNavigation(passage);
     }
-
+    hasVisitedPassage(currPassage) {
+        // if we have visitedText, check if we actually have visited
+        const hasVisitedText = Object.keys(currPassage).includes("visitedText");
+        if (hasVisitedText && this.passageHistory.includes(currPassage)) {
+            //if we have items in passage, check if item is used
+            if (Object.keys(currPassage).includes("items")) {
+                for (const [key, value] of Object.entries(currPassage.items)) {
+                    // if item is not used, return original passage
+                    if (!value.used) return currPassage;
+                }
+            }
+            // if we dont have items, and item is used, return visited text
+            currPassage.text = currPassage.visitedText;
+        }
+        //  if passage dont have visitedText or is not in history, return original
+        return currPassage;
+    }
+    hasItemInInv = (itemName) => this.inventory.currentInventory.map(invItem => invItem.name.toLowerCase()).includes(itemName.toLowerCase());
     addItemTextToPassage(passage) {
         var mod = "";
-        const { extinguisher, flashlight } = passage.items;
-
-        if (extinguisher.use) mod = items.extinguisher.can;
-        if (flashlight.use) mod = items.flashlight.can;
-        if (this.inventory.currentInventory.length == 0) {
-            if (extinguisher.use) mod = items.extinguisher.cant;
-            if (flashlight.use) mod = items.flashlight.cant;
-        }
-        return `${passage.text}<br>${mod}`;
+        if (Object.keys(passage).includes("items")) {
+            for (const [key, value] of Object.entries(passage.items)) {
+                if (value.use && !value.used && this.hasItemInInv(key)) {
+                    mod = items[key].can;
+                }
+                else if (this.inventory.currentInventory.length == 0 && value.use) {
+                    mod = items[key].cant;
+                }
+            }
+            return `${passage.text}<br>${mod}`;
+        } return passage.text;
     }
     goToPrevPassage() {
         if (this.passageHistory.length > 0) {
@@ -180,8 +190,12 @@ class Main {
         itemResponse.classList.add("item-response-hidden");
         if (nextPassage) {
             this.inventory.removeFromInventory(usedButton.id);
+            this.currPassage.items[usedButton.id.toLowerCase()].used = true;
             this.goToPassage(nextPassage);
         }
+    }
+    getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
     }
 }
 
@@ -198,7 +212,7 @@ const items = {
         text: `You spray the fire with the extinguisher, trying to focus on the base of it. 
         The Extinguisher spitters and spatters what few droplets it has left and you eventually defeat the blazing flames`,
         can: `${dialogue.thoughts("I have to try to put out this fire!")}`,
-        cant: `${dialogue.thoughts("I need something to put out this fire with!")}`
+        cant: `${dialogue.thoughts("I need something to put out this fire with!")}`,
     },
     flashlight: {
         name: "Flashlight",
@@ -207,13 +221,9 @@ const items = {
         There are many thoughts rushing through your mind, amongst them are pleasent memories from a time long past.<br>
         You spot the door that had light shining through the keyhole and approach it.`,
         can: `${dialogue.thoughts("I can use my flashlight here so I can see!")}`,
-        cant: `${dialogue.thoughts("I can't see shit! I will need something to light up this place with!")}`
+        cant: `${dialogue.thoughts("I can't see shit! I will need something to light up this place with!")}`,
     }
 };
-
-
-
-
 
 
 const passages = {
@@ -224,11 +234,6 @@ const passages = {
             passageLink(null, "or"),
             passageLink("egg", "Egg?"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
     },
     egg: {
         text: dialogue.thoughts("Hmm.. It is a difficult question; What did come first?"),
@@ -237,11 +242,7 @@ const passages = {
             passageLink(null, "or"),
             passageLink("joke", "🐔?"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     joke: {
         text: `${dialogue.thoughts("I dont have time for this! There might be a fire raging and I'm standing here thinking about chickens?")}<br><br>
@@ -250,11 +251,7 @@ const passages = {
         links: [
             passageLink("foyer_3", "Leave office"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     intro: {
         text: `You abruptly wake up at the darkest hour of the night, remove the small boulders 
@@ -271,11 +268,7 @@ const passages = {
         links: [
             passageLink("apartment", "Leave apartment"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     apartment: {
         text: `As you exit your apartment you come to the realization; <br><br>
@@ -291,8 +284,7 @@ const passages = {
             passageLink("foyer_1", "Take the stairs"),
         ],
         items: {
-            extinguisher: { use: false, pickup: true, },
-            flashlight: { use: false, pickup: false }
+            extinguisher: { use: false, pickup: true, used: false },
         },
         next: null,
     },
@@ -307,8 +299,7 @@ const passages = {
             passageLink("foyer_1", "Take the stairs instead"),
         ],
         items: {
-            extinguisher: { use: false, pickup: true, },
-            flashlight: { use: false, pickup: false }
+            extinguisher: { use: false, pickup: true, used: false },
         },
         next: null,
     },
@@ -318,38 +309,31 @@ const passages = {
             passageLink("foyer_1", "Take the stairs"),
         ],
         items: {
-            extinguisher: { use: false, pickup: true, },
-            flashlight: { use: false, pickup: false }
+            extinguisher: { use: false, pickup: true, used: false },
         },
         next: null,
     },
     foyer_1: {
         text: `In a hurry you stumble into the foyer.<br><br>
         ${dialogue.thoughts("These lights are never turned off..")} ..you notice while you get back on your feet.<br><br>
-        ${dialogue.thoughts("I should go to the parking lot, thats the one thing I remember from previous fire drills, 'In case of emergency, gather at the parking lot' they kept hammering into our heads'")}`,
+        ${dialogue.thoughts(`I should go to the parking lot, thats the one thing I remember from previous fire drills, 
+        'In case of emergency, gather at the parking lot' they kept hammering into our heads'`)}
+        `,
         links: [
             passageLink("outside_building_1", "Go outside."),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     foyer_2: {//TODO
         text: `The person has left and you continue down the foyer alone, trying to figure out why 
-        the alarms are not ringing and where the stench is coming from.You see the janitor's 
+        the alarms are not ringing and where the stench is coming from. You see the janitor's 
         office door at the end of the hallway, on the opposite side of the room you see the door to the staircase next to the elevator.
         There is a fire extinguisher infront of the elevator, that seems to have been thrown away in a hurry.
         `,
         links: [
             passageLink("janitors_door", `Knock on the janitor's door`),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     foyer_3: {
         text: `You are back in the foyer where you have been houndreds of times before.<br><br>
@@ -359,35 +343,11 @@ const passages = {
             passageLink("staircase", `Go to staircase`),
         ],
         items: {
-            extinguisher: { use: false, pickup: true, },
-            flashlight: { use: false, pickup: false }
+            extinguisher: { use: false, pickup: true, used: false },
         },
         next: null,
     },
-    // dialogue_1: {
-    //     text: `""`,//TODO
-    //     links: [
-    //         passageLink("foyer_2", `""`),//TODO
-    //         passageLink("foyer_2", `"I don't know, I recently moved here, maybe ask the janitor?"`),//TODO
-    //     ],
-    //     items: {
-    //         extinguisher: { use: false, pickup: false, },
-    //         flashlight: { use: false, pickup: false }
-    //     },
-    //     next: null,
-    // },
-    dialogue_2: {
-        text: `"same here, why are the alarms not ringing?"`,//TODO
-        links: [
-            passageLink("foyer_2", `"I don't have time for this, I'm late for work!"`),//TODO
-            passageLink("foyer_2", `"I don't know, I recently moved here, maybe ask the janitor?"`),//TODO
-        ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
-    },
+
     outside_building_1: {
         text: `You are outside the building, there is nobody else around. Not a single sound can be heard, 
         it's darker than the center of a black hole, and you cannot see further than a few meters away.<br><br>
@@ -399,11 +359,7 @@ const passages = {
             passageLink("outside_leave", "Investigate the darkness"),
             passageLink("enter_building", "Go back inside"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     outside_building_2: {
         text: `You come to your senses and turn around to go back inside while thinking; <br><br>
@@ -411,11 +367,7 @@ const passages = {
         links: [
             passageLink("enter_building", "Go back inside"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     outside_building_3: {
         text: `Nothing has changed out here since last time you was here`,
@@ -423,11 +375,7 @@ const passages = {
             passageLink("outside_leave", "Leave"),
             passageLink("foyer_3", "Go back inside"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     outside_leave: {
         text: `As you are nearing the darkness you are struck back with a flood of thoughts; <br><br>
@@ -437,11 +385,7 @@ const passages = {
         links: [
             passageLink("outside_building_2", "Turn Back"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     enter_building: {//TODO
         text: `You go back inside the building and meet someone exiting.They are equipped with a dapper suit and look ready to go to the likes of a fancy party.<br>
@@ -452,57 +396,63 @@ const passages = {
             ${dialogue.npc("I don't have time for this, I'm late for work!")}<br><br>
             The person brushes you off and leaves the building.<br>
             You shake your head in disbelief that they could not tell something was off.<br><br>
-                                    `,
+            `,
         links: [
             passageLink("foyer_2", `${dialogue.thoughts("Well, that was odd!")}`),
             // passageLink("dialogue_2", `TODO: "NO! I woke up smelling smoke and I rushed out, I have no idea what's going on"`),//TODO
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     staircase: {
-        text: `You are in the staircase`,
+        text: `You are in the staircase`,//TODO something more here
         links: [
             passageLink("foyer_3", `Go back to hallway`),
             passageLink("floor_select", `Go to specific floor`),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     floor_select: {
         text: `Which floor do you go to?`,
         links: [
             passageLink("basement_1", `Basement`),
             passageLink("foyer_3", `Ground Floor`),
-            passageLink("other_floors", `Floor 02`),
+            passageLink("dialogue_1", `Floor 02`),
             passageLink("other_floors", `Floor 03`),
             passageLink("floor_04", `Floor 04`),
             passageLink("other_floors", `Floor 05`),
             passageLink("janitors_floor_1", `Floor 06`),
             passageLink("other_floors", `Floor 07`),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     other_floors: {
         text: `Everything seems to be in order here.`,
         links: [
             passageLink("floor_select", `Back to staircase`),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+    },
+    dialogue_1: {
+        text: `As you exit the staircase, you hear a door slam shut. A well dressed individual that looks to be 
+        fairly stressed approaches the staircase door and bumps your shoulder as they pass you. <br> <br>
+
+            ${dialogue.speech("Hey! You again?")}<br>
+            ${dialogue.npc("Eh..? What?")}<br>
+            ${dialogue.speech("I met you earlier in the foyer, remember? You said you were late for work.")}<br>
+            ${dialogue.npc("What are you talking about? We have never met before im my life!")}<br>
+            ${dialogue.thoughts("What is this person talking about? I swear it is the same person I met before")}<br>
+            ${dialogue.speech("I'm sorry, I must have been mistaking you for someone else then.")}<br>
+            ${dialogue.npc("That is OK, it happens. I got to go to work, have a good day, sir!")}<br><br>
+            You bid them farewell after this confusing interaction and they leave.<br><br>
+            ${dialogue.thoughts("This day is getting more and more strange by the minute.")}<br><br>
+            As far as you can tell there is no sign of neither smoke nor fire here.<br>
+            `,
+        visitedText: `${dialogue.thoughts("This is the floor where I met that person who was going to work.")}<br><br>
+            As far as you can tell there is no sign of neither smoke nor fire here.<br>
+            `,
+        links: [
+            passageLink("floor_select", `Back to staircase`),
+
+        ],
     },
     basement_1: {
         text: `You enter the basement, it is a cold, damp and dark basement with a distinct smell of old potatoes. <br>
@@ -513,8 +463,8 @@ const passages = {
             passageLink("floor_select", `Back to staircase`),
         ],
         items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: true, pickup: false }
+            extinguisher: { use: false, pickup: false, used: false },
+            flashlight: { use: true, pickup: false, used: false }
         },
         next: "basement_2",
     },
@@ -527,11 +477,7 @@ const passages = {
         links: [
             passageLink("basement_3", "Open the door"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     basement_3: {
         text: `As you open the door a great, bright light blinds you. You cover your eyes with your hands to block the light.<br>
@@ -541,26 +487,17 @@ const passages = {
         links: [
             passageLink("intro", "'The end?'"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     floor_04: {
         text: `This is the floor you live in. You know this hallway, you have been here houndreds of times before, but something is off. //TODO change "you have been here houndreds of times before" reused
         Something is different. You can't quite put your finger on what it is.<br>
         ${dialogue.thoughts("Why does it feel like ive never been here before?")}<br>
-
         `,
         links: [
             passageLink("floor_04_1", "Investigate Further"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     floor_04_1: {
         text: `As you walk around the hallways you are taken away by thoughts about the past<br>
@@ -573,11 +510,7 @@ const passages = {
         links: [
             passageLink("floor_04_2", `${dialogue.thoughts("What is that sound?")}`),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     floor_04_2: {
         text: `Suddenly the air becomes thick and viscous, almost glue like. The lights get dimmer and dimmer until you are surrounded by nothing but darkness.<br><br>
@@ -593,11 +526,7 @@ const passages = {
         links: [
             passageLink("floor_04_3", '"This place.. it is my dad`s garage"'),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     floor_04_3: {//TODO "rhythm" repetative
         text: `The figure crouched on the floor is impatiently banging a wrench on the toolbox. That rhythm.. You have known this rhythm your whole life,
@@ -610,11 +539,7 @@ const passages = {
         links: [
             passageLink("floor_04_4", '"Wha.. Who`s there?"'),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     floor_04_4: {
         text: `You turn around and are immediatly struck by an ambivalent feeling when you see what is approaching.<br>
@@ -626,11 +551,7 @@ const passages = {
         links: [
             passageLink("floor_04_5", 'Suddenly..'),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     floor_04_5: {
         text: `The shapes slowly fade and they whisk out of the garage leaving you standing there. You try to follow but you can't move. Your feet are stuck.<br>
@@ -640,11 +561,7 @@ const passages = {
         links: [
             passageLink("floor_04_6", '"Wha.. Who is this?"'),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     floor_04_6: {
         text: `This is the floor you live in. You know this hallway, you have been here houndreds of times before, but something is off.
@@ -654,11 +571,7 @@ const passages = {
         links: [
             passageLink("floor_select", `Back to staircase`),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     janitors_door: {
         text: `You knock on the janitor's door and get no answer, you feel the doorknob, it's locked, in slight panic you start pounding it.
@@ -675,11 +588,7 @@ const passages = {
         links: [
             passageLink("janitors_office_1", `Open the door`),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     janitors_office_1: {
         text: `You peek inside the office, there is nobody there. It looks to be abandoned, and has been for quite some time.<br>
@@ -695,11 +604,7 @@ const passages = {
         links: [
             passageLink("janitors_office_2", "Pick up the note"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     janitors_office_2: {
         text: `On the note there are some squiggles that are not legible. You notice it has some writing on the backside and you flip it over.<br><br>
@@ -711,69 +616,54 @@ const passages = {
             passageLink("foyer_3", "Leave office"),
             passageLink("janitors_office_3", "Look through the window"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     janitors_office_3: {
         text: `You stare out the window into the deep darkness of the night and think deep thoughts:`,
         links: [
             passageLink("easter", '"I wonder..."'),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     janitors_floor_1: {
         text: `You exit the staircase and are met with a plume of dreadful, suffocating smoke that immediately darkens the room.<br>
-        The bright light from the fire casts amazing contrasting shadows that dance on the walls instilling bone-chilling fear throughout your body.<br>
-        ${hasVisitedPassage("janitors_floor_1", "test")}
+        The bright light from the fire casts amazing contrasting shadows that dance on the walls instilling bone-chilling fear throughout your body.<br>        
+        `,
+        visitedText: `You dare not set foot in this floor again, after what happened last time you were here.<br><br>
+        ${dialogue.thoughts("Ugh!.. I really dont like this floor!")}<br><br>
         
         `,
         links: [
             passageLink("floor_select", `Back to staircase`),
         ],
         items: {
-            extinguisher: { use: true, pickup: false, },
-            flashlight: { use: false, pickup: false }
+            extinguisher: { use: true, pickup: false, used: false },
         },
         next: "janitors_floor_2",
     },
     janitors_floor_2: {
-        text: `After the flames die out you are able to go down the hallway where you notice a door ajar.<br>
-        ${dialogue.thoughts("I hope whoever lives there is OK, I better take a look")}<br>
-        "H.. Hello!?" you stutter, right before you see the door suddenly slam shut with a loud <b>bam!</b><br>
+        text: `After the flames die out you are able to go down the hallway where you notice a door ajar.<br><br>
+        ${dialogue.thoughts("I hope whoever lives there is OK, I better take a look")}<br><br>
+        ${dialogue.speech("H..Hello! ?")} ..you stutter, right before you see the door suddenly slam shut with a loud <b>bam!</b><br><br>
         As a being of curiosity you walk down the hallway, over the charred pieces of hardwood flooring that cracked and splintered from the fire.<br>
         Sounds of crumbling charcoal under each step as you get closer and closer to the door. <br>
         `,
         links: [
             passageLink("janitors_floor_3", "Knock on the door"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     janitors_floor_3: {
         text: `${dialogue.thoughts("This has been an absolutely surreal experience ive never heard the likes of before")}
         ..is the only thing going through your mind as you knock on the door.<br>
         <b>Knock, knock!</b> ... <br> not a single sound, you could hear a needle drop..<br> <b>Kno...</b><br>
-        Wha.. the.. !? you exclaim as the door opens slightly when you tried to knock the second time<br>
+        ${dialogue.speech("Wha.. the.. !?")} ..you exclaim as the door opens slightly when you tried to knock the second time<br>
         You carefully push the door a bit more open with your foot..
         `,
         links: [
             passageLink("janitors_floor_4", "Go inside"),
         ],
-        items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: false }
-        },
-        next: null,
+
     },
     janitors_floor_4: {
         text: `You tread with caution and open the door slowly while peeking inside, carefully querying <br><br>
@@ -789,8 +679,8 @@ const passages = {
             passageLink("floor_select", "Go back to staircase"),
         ],
         items: {
-            extinguisher: { use: false, pickup: false, },
-            flashlight: { use: false, pickup: true }
+            extinguisher: { use: false, pickup: false, used: false },
+            flashlight: { use: false, pickup: true, used: false }
         },
         next: null,
     },
@@ -831,13 +721,7 @@ function itemButton(item, parent) {
     a.appendChild(document.createTextNode("Use " + item.name));
     parent.appendChild(a);
 };
-function hasVisitedPassage(passageName, text) {
-    console.log('[script:830]: passageName', main.passageHistory.map(passage => passage.name == passageName));
-    if (main.passageHistory.map(passage => passage.name == passageName).includes(passageName)) {
-        return text;
-    }
-    return "asdasd";
-}
+
 
 class FlowChart {
     canvasDiv = getElId("dev_canvas");
