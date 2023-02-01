@@ -67,14 +67,6 @@ class Inventory {
         main.updateItems();
     }
     addToInventory(itemPickupLink) {
-        // TODO PLACEHOLDER
-        // TODO PLACEHOLDER
-        // TODO PLACEHOLDER
-        // TODO PLACEHOLDER
-        // TODO PLACEHOLDER
-
-
-
         this.currentInventory.push(new Item(itemPickupLink, this));
         var parentDiv = itemPickupLink.parentElement;
         // find index of itemPickupLink to remove it's <hr>
@@ -94,6 +86,7 @@ class Main {
     inventory = new Inventory(this);
     passageHistory = [];
     currPassage = null;
+    timeoutJokeTimer = null;
     constructor() {
         null;
     }
@@ -137,12 +130,14 @@ class Main {
     }
     clearContainer() { textContainer.innerHTML = ""; }
     goToPassage(passage, goToPrev = false) {
+        this.timeoutJoke(passage);
         updatePassageIndicator(passage); //!DEV
         itemResponse.classList.add("item-response-hidden");
+        console.log('[script:134]: Object.keys', Object.keys(passages).find(key => passages[key] === passage));
         itemResponse.innerHTML = "";
         if (this.currPassage && !goToPrev) {
-            this.currPassage.name = Object.keys(passages).find(key => passages[key] === this.currPassage);
             this.passageHistory.push(this.currPassage);
+            this.currPassage.name = Object.keys(passages).find(key => passages[key] === this.currPassage);
         }
         this.currPassage = passage;
         this.clearContainer();
@@ -150,6 +145,15 @@ class Main {
         var hasVisitedPassage = this.hasVisitedPassage(passage);
         textContainer.innerHTML = this.addItemTextToPassage(hasVisitedPassage);
         this.updateItems();
+    }
+    timeoutJoke(passage) {
+        if (Object.keys(passage).includes("timeout") && !timeoutJokeTimer) {
+            this.timeoutJokeTimer = setTimeout(() => {
+                this.goToPassage(passages.timeout);
+                console.log("lol ultra easter egg joke");
+            }, wait * passage.timeout);
+        } else clearTimeout(this.timeoutJokeTimer);
+        return passage;
     }
     hasVisitedPassage(currPassage) {
         // if we have visited.Text, check if we actually have visited
@@ -164,7 +168,8 @@ class Main {
             }
             // if we dont have items, and item is used, return visited text
             currPassage.text = currPassage.visited.text;
-            this.updateNavigation(currPassage.visited);
+            if (Object.keys(currPassage.visited).includes("links"))
+                this.updateNavigation(currPassage.visited);
         }
         //  if passage dont have visitedText or is not in history, return original
         return currPassage;
@@ -253,7 +258,13 @@ const passages = {
         You get your act together after that moment of weakness and blame it on the stress of dealing with the situation!`,
         links: [
             passageLink("foyer_3", "Leave office"),
-        ],
+        ], visited: {
+            text: `<h1> Congratulations, you found the ultra secret easter egg joke!</h1>
+            ${dialogue.thoughts("I dont have time for this! There might be a fire raging and I'm standing here thinking about chickens?")}<br><br>
+        You can not believe you have just stood there for 5 minutes thinking about chickens, and it was not the good deep fried kind either.<br>
+        You get your act together after that moment of weakness and blame it on the stress of dealing with the situation!`,
+        },
+        timeout: 120,
     },
     intro: {
         text: `You abruptly wake up at the darkest hour of the night, remove the small boulders 
@@ -400,7 +411,7 @@ const passages = {
         ${dialogue.thoughts("I seriously got to stop loosing track of my thoughts and focus on the task at hand!")}<br>
         `,
         visited: {
-            text: `Everything that is happening is causing you to sweat as your stress level increases.<br><br>
+            text: `Everything that is happening is causing you to sweat and your stress level increases.<br><br>
             ${dialogue.thoughts("I cannot wait until this day is over!")}<br>
             `,
             links: [
@@ -452,9 +463,6 @@ const passages = {
             text: `${dialogue.thoughts("This is the floor where I met that person who was going to work.")}<br><br>
             As far as you can tell there is no sign of neither smoke nor fire here.<br>
             `,
-            links: [
-                passageLink("floor_select", `Back to staircase`),
-            ],
         },
     },
     basement_1: {
@@ -492,7 +500,9 @@ const passages = {
         ],
     },
     basement_4: {//TODO
-        text: `
+        text: `As the light fades, you turn off the PC monitor and get ready to go to bed feelin 
+        unachieved by not having found all the endings of the game and vow to yourself;<br><br>
+        ${dialogue.thoughts("Tomorrow i will find the rest!")}<br>
         `,
         links: [
             passageLink("intro", "'The end?'"),
@@ -597,7 +607,6 @@ const passages = {
         text: `As if struck with the worst case of Déjà vu possible you begin to wonder;<br><br>
         ${dialogue.thoughts("Was my father was a janitor?")}<br>
         ${dialogue.thoughts("Is this where he worked?")}<br>
-        ${dialogue.thoughts("I dont remember living here")}<br>
         `,
         links: [
             passageLink("floor_select", `Back to staircase`),
@@ -649,7 +658,7 @@ const passages = {
     janitors_office_3: {
         text: `You stare out the window into the deep darkness of the night and think deep thoughts:`,
         links: [
-            passageLink("easter", '"I wonder..."'),
+            passageLink("easter", dialogue.thoughts("I wonder...")),
         ],
     },
     janitors_floor_1: {
@@ -660,9 +669,6 @@ const passages = {
             text: `You dare not set foot in this floor again, after what happened last time you were here.<br><br>
             ${dialogue.thoughts("Ugh!.. I really dont like this floor!")}<br><br>
             `,
-            links: [
-                passageLink("floor_select", `Back to staircase`),
-            ],
         },
         links: [
             passageLink("floor_select", `Back to staircase`),
@@ -713,6 +719,13 @@ const passages = {
             flashlight: { use: false, pickup: true, used: false }
         },
     },
+    timeout: {
+        text: `What are you doing?
+        `,
+        links: [//TODO
+            passageLink("joke", "Get back to the story"),
+        ],
+    }
 };
 
 
