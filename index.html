@@ -240,11 +240,15 @@
                 width: 100%;
                 border-style: dashed;
             }
+
+            .outerDev {
+                display: hidden;
+            }
         </style>
     </head>
 
     <body>
-        <div note="DEV ONLY">
+        <div note="DEV ONLY" id="outerDev" class="outerDev">
             <div id="dev_canvas" class="dev_canv_hidden">
                 <canvas id="canvas_" width="2500px" height="1250px"></canvas>
             </div>
@@ -262,12 +266,18 @@
             </div>
         </div>
         <div id="container">
-
             <div id="text-container">
-                <p>
-                    Welcome, click <a href="#" onclick="main.goToPassage(passages[`intro`])">HERE</a> to start
-                </p>
-
+                Welcome, click <a href="#" onclick="main.goToPassage(passages[`intro`])">HERE</a> to start<br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                Made for a school project at Noroff - Bachelor in Interactive Media: Games.<br>
+                Class: Narrative Design.<br>
+                Made by: <a href="https://twitch.tv/itsoik"> Leif Hagen aka: <h4 style="display: inline;">OikoumE
+                    </h4></a>
             </div>
             <div id="item-container">
                 <div id="item-response" class="item-response-hidden"></div>
