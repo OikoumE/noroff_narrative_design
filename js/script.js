@@ -575,7 +575,7 @@ const passages = {
         <br>
         Made for a school project at Noroff - Bachelor in Interactive Media - Games.<br>
         Class: Narrative Design.<br>
-        Made by: <a href="https://twitch.tv/itsoik"> Leif Hagen aka: <h4 style="display: inline;">OikoumE</h4>.</a>
+        Made by: <a target="_blank" href="https://twitch.tv/itsoik"> Leif Hagen aka: <h4 style="display: inline;">OikoumE</h4>.</a>
         `,
         links: [
             passageLink(null, ""),
