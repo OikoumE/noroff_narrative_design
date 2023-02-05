@@ -78,7 +78,7 @@ class Inventory {
 class Main {
     inventory = new Inventory(this);
     passageHistory = [];
-    currPassage = null;
+    currPassage = passages.intro;
     timeoutJokeTimer = null;
     constructor() {
         null;
@@ -129,15 +129,40 @@ class Main {
         itemResponse.innerHTML = "";
         if (this.currPassage && !goToPrev) {
             this.passageHistory.push(this.currPassage);
-            this.currPassage.name = Object.keys(passages).find(key => passages[key] === this.currPassage);
         }
         this.currPassage = passage;
+        this.currPassage.name = Object.keys(passages).find(key => passages[key] === this.currPassage);
         this.clearContainer();
         this.updateNavigation(passage);
         var hasVisitedPassage = this.hasVisitedPassage(passage);
         textContainer.innerHTML = this.addItemTextToPassage(hasVisitedPassage);
         this.updateItems();
         this.finalEnding();
+        this.thankYou();
+    }
+    thankYou() {
+        if (this.currPassage.name == "basement_final") {
+            var visitedJokes = this.passageHistory.filter((passage) => {
+                const { name } = passage;
+                if (name == "joke" || name == "timeout") { return passage; }
+            });
+            var p = getElId("basement_final_p");
+            console.log('[script:150]: visitedJokes', visitedJokes);
+            var jokeCount = (visitedJokes.length < 3 ? visitedJokes.length : 2);
+
+
+            if (jokeCount > 0) p.innerHTML = `<b>Good Job! </b><br>`;
+            p.innerHTML += `You found ${jokeCount} of 2 easter eggs!<br>`;
+            switch (jokeCount) {
+                case 0:
+                    p.innerHTML += `Hint: <i>There was a window</i>`;
+                    break;
+                case 1:
+                    p.innerHTML += `Hint: <i>It takes time to to deep fry chickens.</i>`;
+                    break;
+                default: null;
+            }
+        }
     }
     finalEnding() {
         const p = getElId("countDown");
@@ -220,7 +245,6 @@ class Main {
     }
 }
 
-const main = new Main();
 const dialogue = {
     thoughts: (x) => `<p class="thoughts">"${x}"</p>`,
     speech: (x) => `<p class="playerSpeech">"${x}"</p>`,
@@ -279,7 +303,7 @@ const passages = {
         timeout: 120,
     },
     timeout: {
-        text: `What are you doing? Did you not already waste
+        text: `What are you doing? Did you not already waste enough time thinking about chickens?
         `,
         links: [//TODO
             passageLink("joke", "Get back to the story"),
@@ -571,12 +595,19 @@ const passages = {
         <h1>Thank you for playing through this interactive story</h1>
         <br>
         <br>
+        <p id="basement_final_p"></p>
         <br>
         <br>
-        Made for a school project at Noroff - Bachelor in Interactive Media - Games.<br>
-        Class: Narrative Design.<br>
-        Made by: <a target="_blank" href="https://twitch.tv/itsoik"> Leif Hagen aka: <h4 style="display: inline;">OikoumE</h4>.</a>
-        `,
+        Made for a school project at Noroff, <a
+                    href="https://www.noroff.no/en/studies/university-college/interactive-media-games"
+                    target="_blank">Bachelor in Interactive Media - Games.</a><br>
+                Class: Narrative Design.<br>
+                Made by: Leif Hagen <br>
+                aka: <h4 style="display: inline;"><br>
+                    <a target="_blank" href="https://github.com/OikoumE">OikoumE on GitHub</a><br>
+                    <a target="_blank" href="https://twitch.tv/itsoik">ItsOiK on Twitch</a><br>
+
+                </h4>`,
         links: [
             passageLink(null, ""),
         ],
@@ -915,3 +946,4 @@ const flw = new FlowChart();
 flw.init();
 
 
+const main = new Main();
