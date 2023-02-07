@@ -240,7 +240,6 @@
                 background-color: #ffffff;
                 width: 100vw;
                 height: 100vh;
-                overflow: auto;
             }
 
             .dev_canv_hidden {
@@ -248,7 +247,7 @@
             }
 
             #canvas_ {
-                /* width: 100%; */
+                width: 100%;
                 border-style: dashed;
             }
 
@@ -261,12 +260,13 @@
     <body>
         <div note="DEV ONLY" id="outerDev" class="outerDev">
             <div id="dev_canvas" class="dev_canv_hidden">
-                <canvas id="canvas_" width="3500px" height="1080px"></canvas>
+                <canvas id="canvas_" width="3000px" height="1250px"></canvas>
             </div>
             <div style="position: absolute;right: 0; color:blue" --darkreader-inline-color:#337dff;
                 data-darkreader-inline-color>
                 <button style="width: 70px;" id="dev_x">DEV</button>
                 <button style="width: 70px;" id="dev_z">FLW</button><br>
+
                 <div style="display: flex;"> p: <p style="margin: 0;" id="dev_y">null</p>
                 </div>
             </div>
@@ -277,55 +277,23 @@
         </div>
         <div id="container">
             <div id="text-container">
-                <h1>Welcome!</h1>
-                <p></p>
-                <a href="#" onclick="main.goToPassage(passages[`intro`])">Click <b><u>HERE</u></b> to
-                    start</a><br>
+                <a href="#" onclick="main.goToPassage(passages[`intro`])">Welcome, click <b>HERE</b> to start</a><br>
                 <br>
                 <br>
                 <br>
                 <br>
                 <br>
                 <br>
-                <br>
-                Made for a school project at Noroff:<br>
-                Class: <a href="https://www.noroff.no/en/studies/university-college/interactive-media-games"
-                    target="_blank">
-                    <u>Bachelor in Interactive Media - Games</u>
-                    <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17 13.5v6H5v-12h6m3-3h6v6m0-6-9 9" class="icon_svg-stroke" stroke="white"
-                            stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round"
-                            stroke-linejoin="round" data-darkreader-inline-stroke=""
-                            style="--darkreader-inline-stroke:#a8a095;"></path>
-                    </svg>
-                </a>
-                <br>
-                Course: Narrative Design.<br>
+                Made for a school project at Noroff, <a
+                    href="https://www.noroff.no/en/studies/university-college/interactive-media-games"
+                    target="_blank">Bachelor in Interactive Media - Games.</a><br>
+                Class: Narrative Design.<br>
                 Made by: Leif Hagen <br>
-                aka:
-                <br>
-                <a target="_blank" href="https://github.com/OikoumE">
-                    <u>
-                        <h4 style="display: inline;">OikoumE</h4> on GitHub
-                    </u>
-                    <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17 13.5v6H5v-12h6m3-3h6v6m0-6-9 9" class="icon_svg-stroke" stroke="white"
-                            stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                    </svg>
-                </a>
-                <br>
-                <a target="_blank" href="https://twitch.tv/itsoik">
-                    <u>
-                        <h4 style="display: inline;">ItsOiK</h4> on Twitch
-                    </u>
-                    <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17 13.5v6H5v-12h6m3-3h6v6m0-6-9 9" class="icon_svg-stroke" stroke="white"
-                            stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                    </svg>
-                </a>
-                <br>
+                aka: <h4 style="display: inline;"><br>
+                    <a target="_blank" href="https://github.com/OikoumE">OikoumE on GitHub</a><br>
+                    <a target="_blank" href="https://twitch.tv/itsoik">ItsOiK on Twitch</a><br>
+
+                </h4>
             </div>
             <div id="item-container">
                 <div id="item-response" class="item-response-hidden"></div>
