@@ -1,6 +1,6 @@
 // File: script.js - noroff Narrative 2023
 // Author: itsOiK
-// Date: 24/01-23
+// Date: 24/01-23 
 console.log('[script:0]: JavaScript loaded');
 
 const getElId = (id) => document.getElementById(id);
