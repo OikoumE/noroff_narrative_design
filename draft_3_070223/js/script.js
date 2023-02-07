@@ -545,7 +545,7 @@ const passages = {
             passageLink("basement_4", dialogue.thoughts("Is this the end?")),
         ],
     },
-    basement_4: {//TODO
+    basement_4: {
         text: `You feel yourself floating in a vast void, with no sense of direction you look around to 
         try and understand what is going on.<br>
         When you look to one side you can see a bright light in the distance, on the other side an empty void.<br><br>

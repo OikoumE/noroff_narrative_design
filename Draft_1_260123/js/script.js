@@ -456,7 +456,6 @@ const passages = {
         text: `This is the floor you live in. You know this hallway, you have been here houndreds of times before, but something is off.
         Something is different. You cant quite put your finger on what it is.<br>
         <i>"Why does it feel like ive never been here before"</i><br>
-
         `,
         links: [
             passageLink("floor_select", "Go back to staircase"),

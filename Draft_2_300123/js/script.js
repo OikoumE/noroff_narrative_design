@@ -262,7 +262,6 @@ const passages = {
         You slowly come to the conclusion that atleast your apartment is not on fire.<br><br>
         <p class="thoughts">"Well thats a relief, but what is this hellish smell of smoke, and where does it come from?"</p><br><br>
         From the pile of a weeks worth of used clothes at the foot of your bed you equip a few random items.
-
         `,
         links: [
             passageLink("apartment", "Leave apartment"),
@@ -530,7 +529,6 @@ const passages = {
         text: `This is the floor you live in. You know this hallway, you have been here houndreds of times before, but something is off.
         Something is different. You cant quite put your finger on what it is.<br>
         <p class="thoughts">"Why does it feel like ive never been here before?"</p><br>
-
         `,
         links: [
             passageLink("floor_04_1", "Investigate Further"),
@@ -629,7 +627,6 @@ const passages = {
         text: `This is the floor you live in. You know this hallway, you have been here houndreds of times before, but something is off.
         Something is different. You cant quite put your finger on what it is.<br>
         <p class="thoughts">"Why does it feel like ive never been here before?"</p><br>
-
         `,
         links: [
             passageLink("floor_select", `Back to staircase`),

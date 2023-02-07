@@ -303,7 +303,7 @@ const passages = {
         links: [
             passageLink("foyer_3", "Leave office"),
         ], visited: {
-            text: `<h1> Congratulations, you found the ultra secret easter egg joke!</h1>
+            text: `<h1>Congratulations, you found the ultra secret easter egg joke!</h1>
             ${dialogue.thoughts("I don't have time for this! There might be a fire raging and I'm standing here thinking about chickens?")}
             <br>
             <br>
@@ -465,16 +465,26 @@ const passages = {
         <br>
         <br>
         ${dialogue.thoughts("If anything had happened to someone inside the building, ")}
-        ${dialogue.thoughts("I could not have lived with myself if I had left now, and something would have happened to anyone inside!")})}
+        ${dialogue.thoughts("I could not have lived with myself if I had left now, and something would have happened to anyone inside!")}
         `,
         links: [
             passageLink("enter_building", "Go back inside"),
         ],
     },
-    outside_building_3: {//TODO add more detail
+    outside_building_3: {
         text: `
-        Nothing has changed out here since last time you were here
+        Nothing has changed out here since last time you were here. 
+        <br>
+        The street lights are still nowhere to be seen, the area is as if covered in a blanket of darkness.
         `,
+        visited: {
+            text: `
+        Upon reaching outside yet again, you start to feel as if there is a force preventing you from leaving.
+        <br>
+        <br>
+        ${dialogue.thoughts("What the hell is this feeling, I'm not afraid of the dark!")}
+        ${dialogue.thoughts("I could just leave, but I am unable to do so!")}
+        `},
         links: [
             passageLink("outside_leave", "Leave"),
             passageLink("foyer_3", "Go back inside"),
@@ -686,7 +696,7 @@ const passages = {
             passageLink("basement_4", dialogue.thoughts("Is this the end?")),
         ],
     },
-    basement_4: {//TODO
+    basement_4: {
         text: `
         You feel yourself floating in a vast void, with no sense of direction you look around to 
         try and understand what is going on.
@@ -711,9 +721,11 @@ const passages = {
     },
     basement_fail: {
         text: `
-        You failed to make a decision, it is understandable, it is not an easy choice to make.
+        You failed to make a decision, it is understandable, it's not an easy choice to make.
         <br>
         Afterall, you do not have much to base your choices on.
+        <br>
+        One could even argue that making no decision, is the grandest decision to choose.
         <br>
         <br>
         ${dialogue.thoughts("If only I could try again!")}
