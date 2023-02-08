@@ -4,7 +4,6 @@
 console.log('[script:0]: test');
 
 
-
 const getElId = (id) => document.getElementById(id);
 const appendHr = (element) => element.appendChild(document.createElement("hr"));
 
