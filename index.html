@@ -464,7 +464,14 @@
                 pickupItemLink(passage) {
                     if (Object.keys(passage).includes("items")) {
                         for (const [itemName, itemValue] of Object.entries(passage.items)) {
-                            if (!this.hasItemInInv(itemName) && itemValue.pickup) {
+                            var hasUsed = false;
+                            for (const passageToCheck of Object.keys(passages)) {
+                                var currPass = passages[passageToCheck];
+                                if (Object.keys(currPass).includes("items")) {
+                                    for (const [key, value] of Object.entries(currPass.items)) { if (value.used) hasUsed = true; }
+                                }
+                            }
+                            if (!this.hasItemInInv(itemName) && itemValue.pickup && !hasUsed) {
                                 navigation.appendChild(itemPickup(items[itemName]));
                                 appendHr(navigation);
                             }
@@ -631,8 +638,6 @@
                     cant: `${dialogue.thoughts("I can't see shit! I will need something to light up this place with!")}`,
                 }
             };
-
-
             const passages = {
                 easter: {
                     text: `... ${dialogue.thoughts("What came first?")}`,
