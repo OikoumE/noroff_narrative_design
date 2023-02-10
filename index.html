@@ -464,14 +464,16 @@
                 pickupItemLink(passage) {
                     if (Object.keys(passage).includes("items")) {
                         for (const [itemName, itemValue] of Object.entries(passage.items)) {
-                            var hasUsed = false;
+                            var usedItemName = null;
                             for (const passageToCheck of Object.keys(passages)) {
                                 var currPass = passages[passageToCheck];
                                 if (Object.keys(currPass).includes("items")) {
-                                    for (const [key, value] of Object.entries(currPass.items)) { if (value.used) hasUsed = true; }
+                                    for (const [key, value] of Object.entries(currPass.items)) {
+                                        if (value.used) usedItemName = key;
+                                    }
                                 }
                             }
-                            if (!this.hasItemInInv(itemName) && itemValue.pickup && !hasUsed) {
+                            if (!this.hasItemInInv(itemName) && itemValue.pickup && (itemName != usedItemName)) {
                                 navigation.appendChild(itemPickup(items[itemName]));
                                 appendHr(navigation);
                             }
@@ -566,6 +568,11 @@
                         currPassage.text = currPassage.visited.text;
                         if (Object.keys(currPassage.visited).includes("links"))
                             this.updateNavigation(currPassage.visited);
+                        if (Object.keys(currPassage.visited).includes("items")) {
+                            //TODO WE CAN ADD ITEMS TO VISITED
+                            this.pickupItemLink(currPassage.visited);
+                        }
+
                     }
                     //  if passage don't have visitedText or is not in history, return original
                     return currPassage;
@@ -939,6 +946,17 @@
                         passageLink("janitors_floor_1", `Floor 06`),
                         passageLink("other_floors", `Floor 07`),
                     ],
+                },
+                floor_07: {
+                    text: `
+                        You enter the hallway and notice a flashlight laying on the floor infront of the door.
+                    `,
+                    links: [
+                        passageLink("floor_select", "Go back to staircase"),
+                    ],
+                    items: {
+                        flashlight: { use: false, pickup: true, used: false }
+                    },
                 },
                 other_floors: {
                     text: `
@@ -1544,18 +1562,23 @@
                 },
                 janitors_floor_1: {
                     text: `You exit the staircase and are met with a plume of dreadful, suffocating smoke that immediately darkens the room.
-        <br>
-        The bright light from the fire casts amazing contrasting shadows that dance on the walls instilling bone-chilling fear throughout your body.
-        <br>        
-        `,
+                        <br>
+                        The bright light from the fire casts amazing contrasting shadows that dance on the walls instilling bone-chilling fear throughout your body.
+                        <br>        
+                    `,
                     visited: {
                         text: `You dare not set foot in this floor again, after what happened last time you were here.
-            <br>
-            <br>
-            ${dialogue.thoughts("Ugh!.. I really don't like this floor!")}
-            <br>
-            <br>
-            `,
+                            <br>
+                            <br>
+                            ${dialogue.thoughts("Ugh!.. I really don't like this floor!")}
+                            <br>
+                            ${dialogue.thoughts("Hmm.. That is strange, I did not see that flashlight on the floor earlier, I think I should grab it")}
+                            <br>
+                            <br>
+                        `,
+                        items: {
+                            flashlight: { use: false, pickup: true, used: false },
+                        }
                     },
                     links: [
                         passageLink("floor_select", `Back to the staircase`),
